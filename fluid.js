@@ -1,7 +1,9 @@
 /* ============================================================
    POMODORO — Background Atmospheric Simulation Engine
    Modes:
-     1. 'smoke'  — Organic Fluid & Gas Dynamics (Crimson Embers/Smoke)
+     1. 'smoke'  — Real grid-based Navier–Stokes fluid dynamics
+                   (semi-Lagrangian advection, diffusion,
+                    pressure projection) — genuine swirling smoke
      2. 'waves'  — Harmonic Undulating Waves & Ripples
      3. 'embers' — Cosmic Embers / Star Drift
      4. 'none'   — Pure Dark Void (Zero GPU/CPU)
@@ -33,199 +35,224 @@
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 1. Organic Fluid & Gas Smoke Dynamics ('smoke')
+  // 1. Real Fluid Dynamics ('smoke') — Navier–Stokes solver
+  //    Semi-Lagrangian advection + diffusion + pressure projection
+  //    (Jos Stam "Stable Fluids" style). Rendered as a low-res
+  //    density field scaled up with bilinear smoothing for soft,
+  //    swirling, ink-in-water smoke.
   // ─────────────────────────────────────────────────────────────
   function startSmoke() {
     stopCurrent();
     if (!canvas) canvas = document.getElementById('fluidCanvas');
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
-
-    function resize() {
+    window.addEventListener('resize', () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
+    });
 
-    const particles = [];
-    const MAX_PARTICLES = 55;
+    // ── Grid (Navier–Stokes solver) ──────────────────────────
+    const N = 80;                 // simulation resolution
+    const size = N * N;
+    const dt = 0.05;
+    const diff = 0.0004;
+    const visc = 0.0004;
 
-    class SmokePuff {
-      constructor(x, y, vx, vy, size, life, isBurst = false) {
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
-        this.size = size;
-        this.maxLife = life;
-        this.life = life;
-        // High visibility alpha: 0.35 - 0.65
-        this.maxAlpha = isBurst ? 0.55 : (0.28 + Math.random() * 0.25);
-        this.alpha = 0;
-        this.rot = Math.random() * Math.PI * 2;
-        this.rotSpeed = (Math.random() - 0.5) * 0.025;
-        this.isEmber = Math.random() < 0.3;
+    const u = new Float32Array(size);      // velocity x
+    const v = new Float32Array(size);      // velocity y
+    const u0 = new Float32Array(size);     // previous velocity x
+    const v0 = new Float32Array(size);     // previous velocity y
+    const dens = new Float32Array(size);   // density (smoke amount)
+    const dens0 = new Float32Array(size);  // previous density
+
+    // Mouse source accumulators (applied at start of each step)
+    const su = new Float32Array(size);
+    const sv = new Float32Array(size);
+    const sd = new Float32Array(size);
+
+    const IX = (i, j) => i + j * N;
+
+    function setBnd(b, x) {
+      for (let i = 1; i < N - 1; i++) {
+        x[IX(i, 0)] = b === 2 ? -x[IX(i, 1)] : x[IX(i, 1)];
+        x[IX(i, N - 1)] = b === 2 ? -x[IX(i, N - 2)] : x[IX(i, N - 2)];
+        x[IX(0, i)] = b === 1 ? -x[IX(1, i)] : x[IX(1, i)];
+        x[IX(N - 1, i)] = b === 1 ? -x[IX(N - 2, i)] : x[IX(N - 2, i)];
       }
+      x[IX(0, 0)] = 0.5 * (x[IX(1, 0)] + x[IX(0, 1)]);
+      x[IX(0, N - 1)] = 0.5 * (x[IX(1, N - 1)] + x[IX(0, N - 2)]);
+      x[IX(N - 1, 0)] = 0.5 * (x[IX(N - 2, 0)] + x[IX(N - 1, 1)]);
+      x[IX(N - 1, N - 1)] = 0.5 * (x[IX(N - 2, N - 1)] + x[IX(N - 1, N - 2)]);
+    }
 
-      update(time, mouse) {
-        // Fluid vortex curl
-        const curlScale = 0.0025;
-        const curlX = Math.sin(this.y * curlScale + time * 0.8);
-        const curlY = Math.cos(this.x * curlScale + time * 0.7);
-
-        this.vx += curlX * 0.08;
-        this.vy += (curlY * 0.06) - 0.05; // upward thermal lift
-
-        // Mouse suction & swirl
-        if (mouse.active) {
-          const dx = mouse.x - this.x;
-          const dy = mouse.y - this.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 320 && dist > 10) {
-            const force = (320 - dist) / 320;
-            this.vx += (-dy / dist) * force * 1.2 + mouse.vx * 0.1;
-            this.vy += (dx / dist) * force * 1.2 + mouse.vy * 0.1;
+    function linSolve(b, x, x0, a, c) {
+      for (let iter = 0; iter < 20; iter++) {
+        for (let j = 1; j < N - 1; j++) {
+          for (let i = 1; i < N - 1; i++) {
+            const idx = IX(i, j);
+            x[idx] = (x0[idx] + a * (x[IX(i - 1, j)] + x[IX(i + 1, j)] +
+                                       x[IX(i, j - 1)] + x[IX(i, j + 1)])) / c;
           }
         }
-
-        this.x += this.vx;
-        this.y += this.vy;
-        this.vx *= 0.982;
-        this.vy *= 0.982;
-        this.rot += this.rotSpeed;
-        this.size += 0.55;
-        this.life--;
-
-        // Fade in and out
-        const p = this.life / this.maxLife;
-        if (p > 0.85) {
-          this.alpha = this.maxAlpha * ((1 - p) / 0.15);
-        } else {
-          this.alpha = this.maxAlpha * (p / 0.85);
-        }
-      }
-
-      draw(c) {
-        if (this.alpha <= 0.005) return;
-        c.save();
-        c.translate(this.x, this.y);
-        c.rotate(this.rot);
-
-        const r = this.size;
-        const grad = c.createRadialGradient(0, 0, 0, 0, 0, r);
-
-        if (this.isEmber) {
-          // Hot ember core
-          const coreR = Math.min(255, rgb.r + 70);
-          const coreG = Math.min(255, rgb.g + 45);
-          const coreB = rgb.b;
-          grad.addColorStop(0, `rgba(${coreR}, ${coreG}, ${coreB}, ${this.alpha * 1.4})`);
-          grad.addColorStop(0.3, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${this.alpha * 0.8})`);
-          grad.addColorStop(0.7, `rgba(${Math.floor(rgb.r * 0.5)}, 10, 20, ${this.alpha * 0.3})`);
-          grad.addColorStop(1, 'rgba(10, 10, 10, 0)');
-        } else {
-          // Luminous crimson smoke
-          grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${this.alpha})`);
-          grad.addColorStop(0.4, `rgba(${Math.floor(rgb.r * 0.7)}, ${Math.floor(rgb.g * 0.3)}, 30, ${this.alpha * 0.6})`);
-          grad.addColorStop(0.8, `rgba(40, 10, 20, ${this.alpha * 0.2})`);
-          grad.addColorStop(1, 'rgba(10, 10, 10, 0)');
-        }
-
-        c.fillStyle = grad;
-        c.beginPath();
-        c.arc(0, 0, r, 0, Math.PI * 2);
-        c.fill();
-        c.restore();
+        setBnd(b, x);
       }
     }
 
-    // Mouse velocity tracking
-    const mouse = { x: width / 2, y: height / 2, vx: 0, vy: 0, active: false };
+    function diffuse(b, x, x0, dt, diffusion) {
+      const a = dt * diffusion * (N - 2) * (N - 2);
+      linSolve(b, x, x0, a, 1 + 4 * a);
+    }
+
+    function project(u, v, p, div) {
+      for (let j = 1; j < N - 1; j++) {
+        for (let i = 1; i < N - 1; i++) {
+          const idx = IX(i, j);
+          div[idx] = -0.5 * (u[IX(i + 1, j)] - u[IX(i - 1, j)] +
+                             v[IX(i, j + 1)] - v[IX(i, j - 1)]) / N;
+          p[idx] = 0;
+        }
+      }
+      setBnd(0, div); setBnd(0, p);
+      linSolve(0, p, div, 1, 4);
+      for (let j = 1; j < N - 1; j++) {
+        for (let i = 1; i < N - 1; i++) {
+          const idx = IX(i, j);
+          u[idx] -= 0.5 * (p[IX(i + 1, j)] - p[IX(i - 1, j)]) * N;
+          v[idx] -= 0.5 * (p[IX(i, j + 1)] - p[IX(i, j - 1)]) * N;
+        }
+      }
+      setBnd(1, u); setBnd(2, v);
+    }
+
+    function advect(b, d, d0, u, v, dt) {
+      for (let j = 1; j < N - 1; j++) {
+        for (let i = 1; i < N - 1; i++) {
+          const idx = IX(i, j);
+          let x = i - dt * N * u[idx];
+          let y = j - dt * N * v[idx];
+          if (x < 0.5) x = 0.5; if (x > N - 1.5) x = N - 1.5;
+          if (y < 0.5) y = 0.5; if (y > N - 1.5) y = N - 1.5;
+          const i0 = (x | 0), i1 = i0 + 1;
+          const j0 = (y | 0), j1 = j0 + 1;
+          const s1 = x - i0, s0 = 1 - s1;
+          const t1 = y - j0, t0 = 1 - t1;
+          d[idx] = s0 * (t0 * d0[IX(i0, j0)] + t1 * d0[IX(i0, j1)]) +
+                   s1 * (t0 * d0[IX(i1, j0)] + t1 * d0[IX(i1, j1)]);
+        }
+      }
+      setBnd(b, d);
+    }
+
+    // ── Offscreen low-res density canvas (scaled up + smoothed) ─
+    const off = document.createElement('canvas');
+    off.width = N;
+    off.height = N;
+    const offCtx = off.getContext('2d', { willReadFrequently: true });
+    const img = offCtx.createImageData(N, N);
+    const data = img.data;
+
+    // ── Mouse source ─────────────────────────────────────────
+    const mouse = { x: width / 2, y: height / 2, active: false };
     let lastX = width / 2, lastY = height / 2;
     let timeout = null;
 
     function handlePointer(cx, cy) {
-      mouse.vx = cx - lastX;
-      mouse.vy = cy - lastY;
-      mouse.x = cx;
-      mouse.y = cy;
-      lastX = cx;
-      lastY = cy;
-      mouse.active = true;
-
-      const speed = Math.hypot(mouse.vx, mouse.vy);
-      if (speed > 2 && particles.length < MAX_PARTICLES + 25) {
-        particles.push(new SmokePuff(
-          cx + (Math.random() - 0.5) * 20,
-          cy + (Math.random() - 0.5) * 20,
-          mouse.vx * 0.15 + (Math.random() - 0.5) * 2,
-          mouse.vy * 0.15 + (Math.random() - 0.5) * 2,
-          45 + Math.random() * 35,
-          110 + Math.random() * 70,
-          true
-        ));
-      }
-
+      const vx = cx - lastX, vy = cy - lastY;
+      lastX = cx; lastY = cy;
+      mouse.x = cx; mouse.y = cy; mouse.active = true;
+      const i = Math.min(Math.max((cx / width) * (N - 2) + 1 | 0, 1), N - 2);
+      const j = Math.min(Math.max((cy / height) * (N - 2) + 1 | 0, 1), N - 2);
+      const idx = IX(i, j);
+      su[idx] += vx * 9;
+      sv[idx] += vy * 9;
+      sd[idx] += 130;
       clearTimeout(timeout);
-      timeout = setTimeout(() => { mouse.active = false; }, 1800);
+      timeout = setTimeout(() => { mouse.active = false; }, 600);
     }
-
     window.addEventListener('mousemove', e => handlePointer(e.clientX, e.clientY));
     window.addEventListener('touchmove', e => {
       if (e.touches.length > 0) handlePointer(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: true });
 
-    // Initial ambient billows across screen
-    for (let i = 0; i < 35; i++) {
-      particles.push(new SmokePuff(
-        Math.random() * width,
-        height * 0.25 + Math.random() * (height * 0.65),
-        (Math.random() - 0.5) * 1.2,
-        -0.5 - Math.random() * 0.8,
-        80 + Math.random() * 110,
-        140 + Math.random() * 120
-      ));
+    // ── Ambient puffs so the fluid is alive without input ────
+    let spawnTimer = 0;
+
+    function step() {
+      // Velocity step (Stam stable fluids)
+      u0.set(u); v0.set(v);
+      for (let k = 0; k < size; k++) {
+        u0[k] += su[k]; v0[k] += sv[k]; su[k] = 0; sv[k] = 0;
+      }
+      diffuse(1, u, u0, dt, visc);
+      diffuse(2, v, v0, dt, visc);
+      project(u, v, u0, v0);
+      u0.set(u); v0.set(v);
+      advect(1, u, u0, u0, v0, dt);
+      advect(2, v, v0, u0, v0, dt);
+      project(u, v, u0, v0);
+
+      // Density step
+      dens0.set(dens);
+      for (let k = 0; k < size; k++) {
+        dens0[k] += sd[k]; sd[k] = 0;
+      }
+      diffuse(0, dens, dens0, dt, diff);
+      dens0.set(dens);
+      advect(0, dens, dens0, u, v, dt);
+
+      // Slight decay so smoke doesn't saturate to solid
+      for (let k = 0; k < size; k++) dens[k] *= 0.982;
     }
 
-    let time = 0;
-    let lastSpawn = 0;
+    function render() {
+      const r = rgb.r, g = rgb.g, b = rgb.b;
+      for (let k = 0; k < size; k++) {
+        let d = dens[k];
+        if (d < 0.02) d = 0;
+        const alpha = Math.min(1, d * 0.5);
+        const base = k * 4;
+        data[base] = r;
+        data[base + 1] = g;
+        data[base + 2] = b;
+        data[base + 3] = alpha * 255;
+      }
+      offCtx.putImageData(img, 0, 0);
 
+      // Draw the low-res density field scaled up with bilinear
+      // smoothing -> soft, continuous, fluid-like smoke.
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fillRect(0, 0, width, height);
+      ctx.save();
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(off, 0, 0, width, height);
+      ctx.restore();
+
+      // Ambient puff so it's never completely blank on load
+      spawnTimer++;
+      if (spawnTimer > 24) {
+        spawnTimer = 0;
+        const sx = Math.random() * width;
+        const sy = height * (0.5 + Math.random() * 0.4);
+        const i = Math.min(Math.max((sx / width) * (N - 2) + 1 | 0, 1), N - 2);
+        const j = Math.min(Math.max((sy / height) * (N - 2) + 1 | 0, 1), N - 2);
+        dens[IX(i, j)] += 55;
+      }
+    }
+
+    // Seed a little initial density so it isn't blank on first load
+    for (let k = 0; k < size; k++) dens[k] = Math.random() * 4;
+
+    let time = 0;
     function loop(now) {
       if (currentMode !== 'smoke') return;
       time += 0.016;
-
-      ctx.fillStyle = '#0a0a0a';
-      ctx.fillRect(0, 0, width, height);
-
-      // Continual ambient generation
-      if (now - lastSpawn > 500 && particles.length < MAX_PARTICLES) {
-        lastSpawn = now;
-        const sx = width * (0.2 + Math.random() * 0.6);
-        const sy = height * (0.6 + Math.random() * 0.35);
-        particles.push(new SmokePuff(
-          sx,
-          sy,
-          (Math.random() - 0.5) * 0.8,
-          -0.7 - Math.random() * 0.9,
-          75 + Math.random() * 90,
-          160 + Math.random() * 90
-        ));
-      }
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.update(time, mouse);
-        p.draw(ctx);
-        if (p.life <= 0 || p.alpha <= 0) {
-          particles.splice(i, 1);
-        }
-      }
-
+      step();
+      render();
       animId = requestAnimationFrame(loop);
     }
 
