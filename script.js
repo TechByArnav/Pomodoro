@@ -955,32 +955,43 @@ class FocusController {
 
 // Global quick triggers
 window.openSettings = function (tabId) {
-  if (window.pomodoroApp) {
-    window.pomodoroApp.openSettings(tabId);
-  }
+  if (window.pomodoroApp) window.pomodoroApp.openSettings(tabId);
 };
 window.closeSettings = function () {
-  if (window.pomodoroApp) {
-    window.pomodoroApp.closeSettings();
-  }
+  if (window.pomodoroApp) window.pomodoroApp.closeSettings();
+};
+window.toggleTimer = function () {
+  if (window.pomodoroApp) window.pomodoroApp.toggle();
+};
+window.resetTimer = function () {
+  if (window.pomodoroApp) window.pomodoroApp.resetTimer();
+};
+window.skipTimer = function () {
+  if (window.pomodoroApp) window.pomodoroApp.skip();
 };
 
 // ── Application Initialization ─────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+function bootstrapApp() {
   try {
-    // 1. Initialize controller first so all UI buttons and shortcuts are active
-    window.pomodoroApp = new FocusController();
+    if (!window.pomodoroApp) {
+      window.pomodoroApp = new FocusController();
+    }
   } catch (err) {
     console.error('FocusController init error:', err);
   }
 
   try {
-    // 2. Initialize atmospheric background
     if (typeof initFluid === 'function') {
       initFluid();
     }
   } catch (err) {
     console.warn('Fluid init note:', err);
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootstrapApp);
+} else {
+  bootstrapApp();
+}
 

@@ -486,6 +486,9 @@ input, button, select, textarea {
   justify-content: center;
   gap: 16px;
   margin-top: 32px;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
 }
 
 .ctrl-btn {
@@ -498,6 +501,12 @@ input, button, select, textarea {
   transition: all 0.2s ease;
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 12;
+  pointer-events: auto !important;
+}
+.ctrl-btn * {
+  pointer-events: none;
 }
 .ctrl-btn:focus-visible {
   outline: 2px solid var(--crimson);
@@ -538,6 +547,9 @@ input, button, select, textarea {
   gap: 20px;
   padding: 16px 24px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+  pointer-events: auto !important;
 }
 
 .hint {
@@ -576,11 +588,13 @@ kbd {
   justify-content: center;
   padding: 20px;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.3s var(--ease-out-expo);
+  transition: opacity 0.3s var(--ease-out-expo), visibility 0.3s var(--ease-out-expo);
 }
 .modal-backdrop.open {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -597,10 +611,11 @@ kbd {
   transform: scale(0.96) translateY(8px);
   transition: transform 0.35s var(--ease-out-expo);
   overflow: hidden;
-  pointer-events: auto !important;
+  pointer-events: none;
 }
 .modal-backdrop.open .modal-dialog {
   transform: scale(1) translateY(0);
+  pointer-events: auto;
 }
 
 .modal-header {
