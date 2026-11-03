@@ -1,286 +1,143 @@
-# Pomodoro — Design Reference
+# Focus Sanctuary — Design & Architecture Reference
 
 > Crimson spark on gunmetal — a single hot-red ember cutting through near-total darkness, with every surface stripped of color until the moment something matters.
 
-**Theme:** dark
-
-## Overview
-
-The Pomodoro timer is a matte-black canvas lit by a single crimson spark. The interface is overwhelmingly achromatic — near-black surfaces, white text, gray hairline borders — and the only chromatic element is a vivid `#dc143c` reserved exclusively for the timer ring, primary action surfaces, and the active mode indicator. Typography is aggressively bold: the system font is set at weight 700 across every size from 10px badges to 56px timer displays, with tight negative tracking. Components are softly rounded. The design system is minimal, monochromatic, and lets the crimson carry 100% of the chromatic narrative — a single warm point in a sea of graphite.
+**Theme:** dark  
+**Default Accent:** Crimson (`#dc143c`)  
+**Base Surface:** Void Black (`#0a0a0a` / `#111111`)
 
 ---
 
-## Tokens — Colors
+## 1. Overview & Core Philosophy
 
-| Name | Value | Token | Role |
-|------|-------|-------|------|
-| Crimson | `#dc143c` | `--color-crimson` | Primary accent — timer ring, active mode label, filled action buttons, session dots |
-| Crimson Glow | `rgba(220,20,60,0.12)` | `--color-crimson-glow` | Ambient background glow, subtle hover halos |
-| Crimson Dim | `rgba(220,20,60,0.35)` | `--color-crimson-dim` | Drop-shadow on ring, active dot box-shadow |
-| Void Black | `#111111` | `--color-void-black` | Page canvas, deepest background layer |
-| Obsidian | `#181818` | `--color-obsidian` | Elevated card surface, section backgrounds |
-| Charcoal | `#2b2a2a` | `--color-charcoal` | Footer surface, secondary button hover, tertiary panel |
-| Graphite | `#343434` | `--color-graphite` | Ring track, card borders, secondary button fills, hairline dividers |
-| Steel | `#666666` | `--color-steel` | Muted labels, keyboard-hint text, quote author |
-| Fog | `#8d8d8d` | `--color-fog` | Tertiary heading text, less-prominent labels |
-| Ash | `#999999` | `--color-ash` | Quote body text, secondary borders, icon strokes |
-| Silver | `#cacaca` | `--color-silver` | Secondary button text, dominant hairline borders |
-| Pure White | `#ffffff` | `--color-pure-white` | Timer display, headlines, primary button text |
-| Bone | `#e9e6e6` | `--color-bone` | Off-white highlights (reserved) |
+This application is an aesthetic, high-craft digital focus sanctuary inspired by **Flocus**, **ThreeTools**, and classical cognitive psychology. It unites a bold, distraction-free matte-black canvas with real-time interactive fluid/gas dynamics, personalized greetings, and multi-framework productivity models.
+
+The entire interface is built with zero external dependencies, making it 100% compatible with GitHub Pages out of the box.
 
 ---
 
-## Tokens — Typography
+## 2. Productivity Frameworks
 
-### System Font Stack — Weight 700 Only
+The system supports 6 proven productivity methodologies. **Classic Pomodoro remains the default**, with instant switching and complete duration customization for every method.
 
-The exclusive boldness is a signature choice. No 300/400/500/600 weights appear anywhere. Hierarchy comes purely from size and color, not weight variation.
+### 1. Classic Pomodoro (Default)
+- **Rhythm:** 25 min focus / 5 min short break / 15 min long break / 4 cycles
+- **Philosophy:** Developed by Francesco Cirillo in the late 1980s. Breaks work into bite-sized sprints where the brain feels no resistance to starting, because relief is always just minutes away.
+- **Customizable:** Work length, short break, long break, and cycle count.
 
-**Family:** `-apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif`
-**Substitute:** Inter (700 only), or any geometric sans with a strong 700 cut
-**Weight:** 700
+### 2. Super-Pomodoro (The 3 Stages)
+Instead of repeating the exact same 25-minute loop all day, your schedule matches your brain's natural cognitive peaks and valleys:
+- **Phase 1: The Ignition Block (Beating Procrastination)**
+  - *Timer:* 20 minutes work / 5 minutes break
+  - *Goal:* Overcome the initial friction barrier. Low pressure, do the easiest subtask first to build kinetic momentum.
+- **Phase 2: The Deep Flow Block (The Ultradian Surge)**
+  - *Timer:* **Stopwatch mode (counting UP)** with a target cap of 60 to 90 minutes.
+  - *Goal:* Ride the momentum into deep, uninterrupted flow state.
+  - *The Flowtime Break Rule (Proportional Rest):* Automatically tracks elapsed time and calculates rest on a **5:1 ratio** (1 minute of break earned for every 5 minutes worked). If interrupted early, you still get proportional recovery.
+- **Phase 3: The Animedoro Reward Block (The Recharge)**
+  - *Timer:* 50 minutes work / 20–25 minutes break
+  - *Goal:* Finish strong without burning out, rewarded with a high-value guilt-free break (one episode of an anime/show or a walk).
+- **The Reset Trigger:** After completing Phase 3, take a 30-minute restorative long break, then loop back to Phase 1.
 
-### Type Scale
+### 3. The 52 / 17 Method (The Sprint Rule)
+- **Rhythm:** 52 minutes intense focus / 17 minutes total disconnect break
+- **Origin:** Discovered by DeskTime in 2014 by analyzing the top 10% most productive knowledge workers. High performers work like 100m sprinters: complete focus followed by stepping completely away from screens.
 
-| Role | Size | Line Height | Letter Spacing | Token |
-|------|------|-------------|----------------|-------|
-| body | 14px | 1.25 | -0.14px | `--text-body` |
-| body-lg | 16px | 1.25 | -0.24px | `--text-body-lg` |
-| subheading | 20px | 1.25 | -0.3px | `--text-subheading` |
-| heading-sm | 24px | 1.25 | -0.36px | `--text-heading-sm` |
-| heading | 46px | 1 | -1.15px | `--text-heading` |
-| display | 68px | 1 | -3.8px | `--text-display` |
-| timer (custom) | 56px | 1 | -2.5px | — |
+### 4. Ultradian Rhythm (90 / 20 Method)
+- **Rhythm:** 90 minutes deep work / 20 minutes biological rest
+- **Origin:** Based on Dr. Nathaniel Kleitman’s Basic Rest-Activity Cycle (BRAC). Human attention cycles in roughly 90-minute waves before cognitive neurotransmitters deplete, demanding 20 minutes of recovery.
 
----
+### 5. Animedoro
+- **Rhythm:** 50 minutes deep focus / 20 minutes entertainment reward
+- **Origin:** Popularized by creative and student communities. The 20-minute break matches the exact runtime of one anime episode or short sitcom without commercials.
 
-## Tokens — Spacing & Shapes
-
-**Base unit:** 4px · **Density:** comfortable
-
-### Spacing Scale
-
-| Name | Value | Token |
-|------|-------|-------|
-| 4 | 4px | `--spacing-4` |
-| 8 | 8px | `--spacing-8` |
-| 12 | 12px | `--spacing-12` |
-| 16 | 16px | `--spacing-16` |
-| 20 | 20px | `--spacing-20` |
-| 24 | 24px | `--spacing-24` |
-| 32 | 32px | `--spacing-32` |
-| 40 | 40px | `--spacing-40` |
-| 48 | 48px | `--spacing-48` |
-
-### Border Radius
-
-| Element | Value |
-|---------|-------|
-| Cards | 20–25px |
-| Buttons | 15px |
-| Pills / Badges | 999px / 7px |
+### 6. DeskTime 112 / 26 Method (The Deep Sprint)
+- **Rhythm:** 112 minutes immersion / 26 minutes recovery walk
+- **Origin:** DeskTime's updated 2021 post-pandemic study revealing that remote workers thrive on ~1.5x longer immersion blocks for complex engineering, writing, and analytical work.
 
 ---
 
-## Surfaces & Elevation
+## 3. Visual Background Simulations
 
-| Level | Name | Value | Purpose |
-|-------|------|-------|---------|
-| 0 | Void Canvas | `#111111` | Base page background |
-| 1 | Obsidian Card | `#181818` | Elevated card / section backgrounds |
-| 2 | Charcoal Panel | `#2b2a2a` | Footer, tertiary panels |
-| 3 | Graphite Border | `#343434` | Borders, ring track, dividers |
+The background runs via a modular canvas engine (`fluid.js`) with 4 selectable atmospheres:
 
-Elevation is communicated **exclusively** through surface tone shifts. No drop shadows — the matte-black aesthetic would be broken by any light bloom or shadow cast.
-
----
-
-## Components
-
-### Timer Ring
-- SVG circle, `r=148`, `viewBox 320×320`, rotated `-90deg` to start at 12 o'clock
-- Track: `stroke: #343434`, `stroke-width: 3`, `opacity: 0.6`
-- Progress: `stroke: #dc143c`, `stroke-width: 4`, `stroke-linecap: round`
-- Glow: `drop-shadow(0 0 6px rgba(220,20,60,0.35))`
-- Depletes clockwise as time elapses
-- Subtle pulse animation when timer is running
-
-### Timer Display
-- Centered inside the ring
-- 56px, weight 700, tabular-nums, `letter-spacing: -2.5px`
-- Color: `#ffffff`
-- Flashes crimson on session completion
-
-### Mode Label
-- Above the timer ring
-- 16px, weight 700, `letter-spacing: 0.2em`, uppercase
-- Color: `#dc143c`
-- Shows: FOCUS / SHORT BREAK / LONG BREAK
-- Fade+slide animation on mode transitions
-
-### Session Dots (×4)
-- 10px circles with 12px gap
-- Inactive: `#343434`
-- Active (current): `#dc143c` with pulse animation
-- Completed: `#dc143c` with glow, scale-pop on completion
-
-### Primary Action Button (Start/Pause)
-- Background: `#dc143c`, text: `#ffffff`, weight 700
-- Border-radius: 15px, padding: 12px 24px, min-width: 120px
-- Hover: `brightness(1.15)` + crimson glow shadow
-- Active: `scale(0.95)`
-
-### Secondary Buttons (Reset, Skip)
-- Background: `#343434`, text: `#cacaca`
-- Hover: `#2b2a2a` background, `#ffffff` text
-
-### Quote Section
-- Max-width: 440px, centered
-- Quote text: 16px italic, `#999999`
-- Author: 14px, `#666666`
-- Crossfade animation on quote change (600ms)
-- Work mode: motivational quotes · Break mode: relaxation quotes
-
-### Ambient Background Glow
-- Fixed-position radial gradient centered behind the timer
-- `radial-gradient(circle, rgba(220,20,60,0.12) 0%, transparent 65%)`
-- Subtle breathing animation (scale + opacity) when timer runs
-
-### Keyboard Hints
-- 11px, `#666666`, opacity 0.6
-- Key badges: 10px, bordered with `#343434`, rounded 4px
+| Mode | Technology | Description |
+|------|------------|-------------|
+| **Fluid Dynamics (Smoke)** | WebGL / Navier-Stokes | Real-time GPU fluid equations with advection, Jacobi pressure solve, curl, vorticity confinement, ambient swirls, and mouse velocity tracking. *(Default)* |
+| **Harmonic Waves** | Canvas 2D / Trigonometric | Multi-layered sinusoidal laminar waves with cursor ripple interference. |
+| **Cosmic Embers** | Particle Physics | Floating luminous embers and stardust drifting upward in negative space with gentle gravitational cursor pull. |
+| **Static Void (Off)** | Pure `#0a0a0a` | Complete blackout for distraction-free work and zero CPU/GPU battery consumption. |
 
 ---
 
-## Animations
+## 4. Name Directory & Philosophical Heritage
 
-| Animation | Duration | Easing | Purpose |
-|-----------|----------|--------|---------|
-| `ringPulse` | 3s infinite | ease-in-out | Subtle glow pulse on running ring |
-| `dotPulse` | 2.4s infinite | ease-in-out | Active session dot breathing |
-| `dotComplete` | 0.5s once | expo-out | Scale pop when session completes |
-| `completionFlash` | 1.2s once | ease | Timer display crimson flash |
-| `modeFade` | 0.8s once | expo-out | Mode label fade + slide |
-| `sectionSwitch` | 1s once | expo-out | Full section fade during mode change |
-| `ambientBreathe` | 4s infinite | ease-in-out | Background glow breathing |
-| Quote crossfade | 600ms | expo-out | Quote text swap with fade |
+Users can personalize the application's header logo and title from a curated roster of classical Sanskrit, Greek, and Roman names representing time, focus, and mindfulness:
 
-**Easing:** `cubic-bezier(0.16, 1, 0.3, 1)` (expo-out) for all transitions.
-
----
-
-## Pomodoro Technique
-
-### How It Works
-1. **Work** for 25 minutes (one "pomodoro")
-2. Take a **short break** of 5 minutes
-3. Repeat steps 1–2
-4. After **4 pomodoros**, take a **long break** of 15 minutes
-5. Reset the cycle and repeat
-
-### Key Principles
-- During a work session, focus on a single task with no distractions
-- If you think of something unrelated, write it down and return to your task
-- Breaks are mandatory — they prevent burnout and maintain focus quality
-- The long break every 4 sessions allows for deeper rest and reflection
+| Name | Heritage | Meaning & Etymology |
+|------|----------|---------------------|
+| **POMODORO** | Italian | *(Default)* The classic icon of intentional timeboxing, named after the tomato timer. |
+| **KAIROS** | Greek (`καιρός`) | The supreme, opportune moment. Ancient Greeks distinguished between *Chronos* (sequential seconds) and *Kairos* (the qualitative, decisive moment of flow). |
+| **DHYĀNA** | Sanskrit (`ध्यान`) | Profound meditative absorption. An unbroken, continuous stream of awareness centered solely on the object of focus without mental wandering. |
+| **EKĀGRA** | Sanskrit (`एकाग्र`) | Single-pointed concentration. The state of absolute mental stillness where secondary distractions dissolve into a single focal point. |
+| **ATARAXIA** | Greek (`ἀταραξία`) | Untroubled, lucid peace of mind. A state of unflappable cognitive serenity amidst surrounding chaos. |
+| **TEMPUS** | Roman / Latin | Time in its purest rhythmic sense: the disciplined, purposeful cadence of hours and seasons. |
+| **AION** | Greek (`Αἰών`) | Timeless eternity and boundless flow. The perception of time standing still when deeply immersed in craft. |
+| **SAMĀDHI** | Sanskrit (`समाधि`) | The highest pinnacle of unified consciousness, where the worker, the tool, and the work become one seamless entity. |
 
 ---
 
-## Do's and Don'ts
+## 5. Design Tokens
 
-### Do
-- Use `#dc143c` exclusively for the timer ring, primary action fills, active session dots, and the mode label
-- Set all text at weight 700; rely on size and color for hierarchy
-- Apply border-radius 15px to buttons, 20–25px to cards
-- Use the surface stack `#111 → #181 → #2b2 → #343` for elevation via tone
-- Apply tight negative letter-spacing at larger sizes
-- Let the void canvas breathe — generous whitespace around the timer
-
-### Don't
-- Never introduce a second chromatic color — the crimson must be the only spark
-- Never use weight 300/400/500/600; exclusive 700 is the signature
-- Never use heavy drop shadows or glow effects; elevation = surface tone only
-- Never use `#000000` as a surface; the canvas is `#111111`
-- Never add gradients to UI surfaces
-- Never place a crimson button on another crimson element; it needs the dark void
-
----
-
-## Quick Start — CSS Custom Properties
-
+### Color Tokens
 ```css
 :root {
-  /* Colors */
-  --color-crimson:       #dc143c;
-  --color-crimson-glow:  rgba(220, 20, 60, 0.12);
-  --color-crimson-dim:   rgba(220, 20, 60, 0.35);
-  --color-void-black:    #111111;
-  --color-obsidian:      #181818;
-  --color-charcoal:      #2b2a2a;
-  --color-graphite:      #343434;
-  --color-steel:         #666666;
-  --color-fog:           #8d8d8d;
-  --color-ash:           #999999;
-  --color-silver:        #cacaca;
-  --color-pure-white:    #ffffff;
-  --color-bone:          #e9e6e6;
+  /* Dynamic Primary Accent (Default: Crimson) */
+  --crimson:        #dc143c;
+  --crimson-glow:   rgba(220, 20, 60, 0.12);
+  --crimson-soft:   rgba(220, 20, 60, 0.32);
 
-  /* Typography */
-  --font-system: -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --font-weight: 700;
-
-  /* Type Scale */
-  --text-body:       14px;
-  --text-body-lg:    16px;
-  --text-subheading: 20px;
-  --text-heading-sm: 24px;
-  --text-heading:    46px;
-  --text-display:    68px;
-
-  /* Spacing */
-  --spacing-4:   4px;
-  --spacing-8:   8px;
-  --spacing-12:  12px;
-  --spacing-16:  16px;
-  --spacing-20:  20px;
-  --spacing-24:  24px;
-  --spacing-32:  32px;
-  --spacing-40:  40px;
-  --spacing-48:  48px;
-
-  /* Border Radius */
-  --radius-buttons: 15px;
-  --radius-cards:   20px;
-  --radius-pills:   999px;
-  --radius-badges:  7px;
-
-  /* Transitions */
-  --ease-out-expo:     cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-fast:   180ms ease;
-  --transition-normal: 400ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-slow:   600ms cubic-bezier(0.16, 1, 0.3, 1);
-
-  /* Ring */
-  --ring-circumference: 980.18;
+  /* Monochrome Void Palette */
+  --void:           #0a0a0a;
+  --obsidian:       #141414;
+  --obsidian-card:  #181818;
+  --charcoal:       #222222;
+  --graphite:       #303030;
+  --steel:          #555555;
+  --ash:            #888888;
+  --silver:         #bbbbbb;
+  --pure-white:     #ffffff;
 }
 ```
 
+### Preset Accents
+- **Crimson Ember:** `#dc143c` (Default)
+- **Molten Orange:** `#ff4300` (Three style)
+- **Amethyst Violet:** `#8b5cf6`
+- **Electric Cyan:** `#06b6d4`
+- **Emerald Neon:** `#10b981`
+- **Rose Quartz:** `#f43f5e`
+- **Solar Gold:** `#eab308`
+- **+ Custom Hex Color Picker**
+
 ---
 
-## Flocus-Inspired Dashboard Architecture
+## 6. Keyboard Shortcuts
 
-The interface adopts **Flocus's sanctuary-style focus dashboard**:
-1. **Idle State:** Displays a greeting that adapts to the time of day (e.g., *"Good afternoon."*, *"Late night. Stay focused."*) paired with a bold, minimal clock face, quote, and start trigger.
-2. **Active State:** Seamlessly transitions the centered block into the circular Pomodoro progress ring, depleting clockwise with live timer countdown.
-3. **Continuous Atmosphere:** The quote rotates smoothly with quotes suited to deep work or mindful relaxation.
+| Key | Action |
+|-----|--------|
+| <kbd>Space</kbd> | Start / Pause active timer or stopwatch |
+| <kbd>R</kbd> | Reset current session |
+| <kbd>K</kbd> | Skip to next session or break |
+| <kbd>S</kbd> | Open / Close Settings modal |
+| <kbd>Esc</kbd> | Dismiss Settings modal |
 
 ---
 
-## WebGL Fluid / Gas Dynamics Background
+## 7. GitHub Pages Deployment
 
-Beneath the achromatic interface lies a real-time GPU-accelerated Navier-Stokes fluid simulation (`fluid.js`):
-- **Aesthetic:** Drifting crimson smoke and ember sparks across void `#0a0a0a`.
-- **Interactivity:** Fluid velocity and dye respond in real time to mouse moves and mobile touch drags with inertia.
-- **Ambient Life:** Autonomous swirling and periodic gentle billows keep the background breathing even when idle.
-- **Performance:** Ping-pong FBOs, Jacobi pressure solver, vorticity confinement, low-resolution computation with bilinear display interpolation, and an automatic lightweight 2D canvas fallback.
-
+The project is pure client-side HTML, CSS, and vanilla JavaScript:
+1. Initialize repository with `git init` (or add via GitHub Desktop).
+2. Commit and push to GitHub.
+3. Enable **GitHub Pages** from repository **Settings > Pages > Branch: `main` / `root`**.
+4. The site deploys instantly with full offline and mobile touch compatibility.
