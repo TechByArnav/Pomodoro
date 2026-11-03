@@ -19,6 +19,21 @@ const DEFAULTS = {
   fluidMode: 'smoke',
   chimeEnabled: true,
 
+  // Clock customization
+  clockFont: 'system',
+  clockSize: 'medium',
+  clockFormat: '12',
+  clockStyle: 'normal',
+  clockColor: '#ffffff',
+
+  // Quote customization
+  quoteFont: 'system',
+  quoteSize: 'medium',
+  quoteCorner: true,
+
+  // Timer style
+  timerStyle: 'ring',
+
   // Method-specific timing (in minutes)
   timings: {
     classic: {
@@ -231,6 +246,9 @@ class FocusController {
       methodBadgeText:     document.getElementById('methodBadgeText'),
       settingsBtn:         document.getElementById('settingsBtn'),
 
+      // App name (visible while working)
+      appNameWorking:      document.getElementById('appNameWorking'),
+
       // Greeting & Clock
       greetingBlock:       document.getElementById('greetingBlock'),
       greetingText:        document.getElementById('greetingText'),
@@ -247,6 +265,18 @@ class FocusController {
       timerTime:           document.getElementById('timerTime'),
       timerLabel:          document.getElementById('timerLabel'),
 
+      // Timer Style Variants
+      timerProgressWrap:   document.getElementById('timerProgressWrap'),
+      timerProgressFill:   document.getElementById('timerProgressFill'),
+      timerGaugeWrap:      document.getElementById('timerGaugeWrap'),
+      timerGaugeProgress:  document.getElementById('timerGaugeProgress'),
+      timerGaugeTime:      document.getElementById('timerGaugeTime'),
+      timerDotsWrap:       document.getElementById('timerDotsWrap'),
+      timerDotMatrix:      document.getElementById('timerDotMatrix'),
+      timerPieWrap:        document.getElementById('timerPieWrap'),
+      timerPieProgress:    document.getElementById('timerPieProgress'),
+      timerPieTime:        document.getElementById('timerPieTime'),
+
       // Flowtime UI (Phase 2 Stopwatch)
       flowtimeEarnedWrap:  document.getElementById('flowtimeEarnedWrap'),
       flowtimeEarnedText:  document.getElementById('flowtimeEarnedText'),
@@ -257,11 +287,18 @@ class FocusController {
       quoteBlock:          document.getElementById('quoteBlock'),
       quoteText:           document.getElementById('quoteText'),
       quoteAuthor:         document.getElementById('quoteAuthor'),
+      quoteCorner:         document.getElementById('quoteCorner'),
+      quoteTextCorner:     document.getElementById('quoteTextCorner'),
+      quoteAuthorCorner:   document.getElementById('quoteAuthorCorner'),
       startBtn:            document.getElementById('startBtn'),
       resetBtn:            document.getElementById('resetBtn'),
       skipBtn:             document.getElementById('skipBtn'),
       iconPlay:            document.querySelector('.icon-play'),
       iconPause:           document.querySelector('.icon-pause'),
+
+      // Corner settings buttons
+      cornerSettingsLeft:  document.getElementById('cornerSettingsLeft'),
+      cornerSettingsRight: document.getElementById('cornerSettingsRight'),
 
       // Settings Modal
       modalBackdrop:       document.getElementById('modalBackdrop'),
@@ -298,6 +335,21 @@ class FocusController {
       fluidModeCards:      document.querySelectorAll('.fluid-mode-card'),
       cfgChimeToggle:      document.getElementById('cfgChimeToggle'),
 
+      // Clock settings
+      cfgClockFont:        document.getElementById('cfgClockFont'),
+      cfgClockSize:        document.getElementById('cfgClockSize'),
+      cfgClockFormat:      document.getElementById('cfgClockFormat'),
+      cfgClockStyle:       document.getElementById('cfgClockStyle'),
+      cfgClockColor:       document.getElementById('cfgClockColor'),
+
+      // Quote settings
+      cfgQuoteFont:        document.getElementById('cfgQuoteFont'),
+      cfgQuoteSize:        document.getElementById('cfgQuoteSize'),
+      cfgQuoteCorner:      document.getElementById('cfgQuoteCorner'),
+
+      // Timer style
+      cfgTimerStyle:       document.getElementById('cfgTimerStyle'),
+
       // Profile
       cfgUserName:         document.getElementById('cfgUserName'),
       namePreview:         document.getElementById('namePreview'),
@@ -324,6 +376,12 @@ class FocusController {
     const now = new Date();
     let h = now.getHours();
     const m = String(now.getMinutes()).padStart(2, '0');
+    const format = this.state.data.clockFormat || '12';
+
+    if (format === '24') {
+      return `${String(h).padStart(2, '0')}:${m}`;
+    }
+
     const ampm = h >= 12 ? 'PM' : 'AM';
     h = h % 12 || 12;
     return `${h}:${m} ${ampm}`;
@@ -331,8 +389,67 @@ class FocusController {
 
   updateClock() {
     this.$.greetingText.textContent = this.getGreeting();
-    this.$.clock.textContent = this.formatClock();
+
+    // Apply clock styling
+    const clock = this.$.clock;
+    const data = this.state.data;
+
+    // Font
+    const fontMap = {
+      system: '-apple-system, system-ui, "SF Pro", sans-serif',
+      monospace: '"SF Mono", "Courier New", monospace',
+      serif: '"SF Pro Display", "Georgia", serif',
+      rounded: '-apple-system, system-ui, sans-serif',
+    };
+    clock.style.fontFamily = fontMap[data.clockFont || 'system'] || fontMap.system;
+
+    // Size
+    const sizeMap = {
+      small: 'clamp(32px, 6vw, 48px)',
+      medium: 'clamp(48px, 8vw, 64px)',
+      large: 'clamp(64px, 10vw, 96px)',
+      xlarge: 'clamp(80px, 12vw, 128px)',
+    };
+    clock.style.fontSize = sizeMap[data.clockSize || 'medium'] || sizeMap.medium;
+
+    // Color
+    clock.style.color = data.clockColor || '#ffffff';
+
+    // Style: normal vs flip
+    if (data.clockStyle === 'flip' && !clock.classList.contains('clock-flip')) {
+      clock.classList.add('clock-flip');
+      this.renderFlipClock();
+    } else if (data.clockStyle !== 'flip' && clock.classList.contains('clock-flip')) {
+      clock.classList.remove('clock-flip');
+      clock.textContent = this.formatClock();
+    }
+
+    if (clock.classList.contains('clock-flip')) {
+      this.renderFlipClock();
+    } else {
+      clock.textContent = this.formatClock();
+    }
+
     if (this.$.namePreview) this.$.namePreview.textContent = this.getGreeting();
+  }
+
+  renderFlipClock() {
+    const timeStr = this.formatClock();
+    const is24 = this.state.data.clockFormat === '24';
+    const parts = is24 ? timeStr.split(':') : timeStr.replace(' ', ':').split(':');
+
+    let html = '';
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      if (i > 0) html += '<span class="flip-digit">:</span>';
+      for (let j = 0; j < part.length; j++) {
+        html += `<span class="flip-card"><span class="flip-card-top" data-value="${part[j]}"></span><span class="flip-card-bottom" data-value="${part[j]}"></span></span>`;
+      }
+    }
+    if (!is24) {
+      html += `<span class="flip-digit">${timeStr.slice(-2)}</span>`;
+    }
+    this.$.clock.innerHTML = html;
   }
 
   // ── Appearance & Names ───────────────────────────────────────
@@ -437,6 +554,11 @@ class FocusController {
 
     // Topbar method badge
     this.$.methodBadgeText.textContent = info.name;
+
+    // App name visible while working (top left)
+    if (this.$.appNameWorking) {
+      this.$.appNameWorking.style.display = this.hasStarted ? 'block' : 'none';
+    }
 
     // Greeting subline
     if (method === 'classic') {
@@ -624,19 +746,79 @@ class FocusController {
   renderDisplay() {
     const m = Math.floor(this.timeRemaining / 60);
     const s = this.timeRemaining % 60;
-    this.$.timerTime.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    const timeStr = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+    const style = this.state.data.timerStyle || 'ring';
+
+    // Hide all variants first
+    this.$.timerRingWrap.style.display = style === 'ring' ? 'block' : 'none';
+    this.$.timerProgressWrap.style.display = style === 'progress' ? 'block' : 'none';
+    this.$.timerGaugeWrap.style.display = style === 'gauge' ? 'block' : 'none';
+    this.$.timerDotsWrap.style.display = style === 'dots' ? 'block' : 'none';
+    this.$.timerPieWrap.style.display = style === 'pie' ? 'block' : 'none';
+
+    // Center timer text (used by ring, gauge, pie; hidden for progress/dots/none)
+    const showCenterText = style === 'ring' || style === 'gauge' || style === 'pie';
+    this.$.timerTime.style.display = showCenterText ? 'block' : 'none';
+    this.$.timerLabel.style.display = showCenterText ? 'block' : 'none';
+
+    if (style === 'ring') {
+      this.$.timerTime.textContent = timeStr;
+    } else if (style === 'gauge') {
+      this.$.timerGaugeTime.textContent = timeStr;
+    } else if (style === 'dots') {
+      this.renderDotMatrix();
+    } else if (style === 'pie') {
+      this.$.timerPieTime.textContent = timeStr;
+    } else if (style === 'none') {
+      // No visualization, just the time text
+      this.$.timerTime.style.display = 'block';
+      this.$.timerTime.textContent = timeStr;
+      this.$.timerLabel.style.display = 'block';
+    }
+  }
+
+  renderDotMatrix() {
+    const totalDots = 60;
+    const progress = this.totalTime > 0 ? (this.timeRemaining / this.totalTime) : 0;
+    const activeCount = Math.round(totalDots * progress);
+
+    let html = '';
+    for (let i = 0; i < totalDots; i++) {
+      html += `<span class="dot${i < activeCount ? ' active' : ''}"></span>`;
+    }
+    this.$.timerDotMatrix.innerHTML = html;
+  }
+
+  renderProgress() {
+    const progress = this.totalTime > 0 ? (this.timeRemaining / this.totalTime) : 0;
+    const style = this.state.data.timerStyle || 'ring';
+
+    if (style === 'ring') {
+      const offset = this.RING_C * (1 - progress);
+      this.$.ringProgress.style.strokeDashoffset = offset;
+    } else if (style === 'progress') {
+      const fillPct = progress * 100;
+      this.$.timerProgressFill.style.width = `${fillPct}%`;
+    } else if (style === 'gauge') {
+      const gaugeC = 2 * Math.PI * 80;
+      const offset = gaugeC * (1 - progress);
+      this.$.timerGaugeProgress.style.strokeDasharray = gaugeC;
+      this.$.timerGaugeProgress.style.strokeDashoffset = offset;
+    } else if (style === 'dots') {
+      this.renderDotMatrix();
+    } else if (style === 'pie') {
+      const pieC = 2 * Math.PI * 75;
+      const offset = pieC * (1 - progress);
+      this.$.timerPieProgress.style.strokeDasharray = pieC;
+      this.$.timerPieProgress.style.strokeDashoffset = offset;
+    }
   }
 
   renderStopwatchDisplay(elapsed) {
     const m = Math.floor(elapsed / 60);
     const s = elapsed % 60;
     this.$.timerTime.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  }
-
-  renderProgress() {
-    const progress = this.totalTime > 0 ? (this.timeRemaining / this.totalTime) : 0;
-    const offset = this.RING_C * (1 - progress);
-    this.$.ringProgress.style.strokeDashoffset = offset;
   }
 
   renderProgressStopwatch(elapsed) {
@@ -708,6 +890,35 @@ class FocusController {
       this.$.quoteAuthor.textContent = q.author;
       block.classList.remove('fade-out');
     }, 450);
+
+    // Also update corner quotes
+    if (this.$.quoteCorner) {
+      if (this.state.data.quoteCorner) {
+        this.$.quoteCorner.style.display = 'block';
+      } else {
+        this.$.quoteCorner.style.display = 'none';
+      }
+      this.$.quoteTextCorner.textContent = `\u201C${q.text}\u201D`;
+      this.$.quoteAuthorCorner.textContent = q.author;
+
+      // Apply quote styling
+      const data = this.state.data;
+      const qFontMap = {
+        system: '-apple-system, system-ui, sans-serif',
+        serif: '"Georgia", "Times New Roman", serif',
+        monospace: '"SF Mono", "Courier New", monospace',
+        italic: '-apple-system, system-ui, sans-serif',
+      };
+      this.$.quoteTextCorner.style.fontFamily = qFontMap[data.quoteFont || 'system'] || qFontMap.system;
+      this.$.quoteTextCorner.style.fontStyle = data.quoteFont === 'italic' ? 'italic' : 'normal';
+
+      const qSizeMap = {
+        small: '11px',
+        medium: '12px',
+        large: '14px',
+      };
+      this.$.quoteTextCorner.style.fontSize = qSizeMap[data.quoteSize || 'medium'] || qSizeMap.medium;
+    }
   }
 
   // ── Audio & Notifications ────────────────────────────────────
@@ -747,6 +958,10 @@ class FocusController {
     this.$.startBtn.addEventListener('click', () => this.toggle());
     this.$.resetBtn.addEventListener('click', () => this.resetTimer());
     this.$.skipBtn.addEventListener('click',  () => this.skip());
+
+    // Corner settings buttons
+    this.$.cornerSettingsLeft.addEventListener('click', () => this.openSettings('tab-appearance'));
+    this.$.cornerSettingsRight.addEventListener('click', () => this.openSettings('tab-timer'));
 
     // Super-Pomodoro Phase 2 "Finish Flow Block"
     this.$.flowFinishBtn.addEventListener('click', () => {
@@ -895,6 +1110,21 @@ class FocusController {
     this.$.fluidModeCards.forEach(c => {
       c.classList.toggle('active', c.dataset.fluid === (data.fluidMode || 'smoke'));
     });
+
+    // Clock settings
+    this.$.cfgClockFont.value = data.clockFont || 'system';
+    this.$.cfgClockSize.value = data.clockSize || 'medium';
+    this.$.cfgClockFormat.value = data.clockFormat || '12';
+    this.$.cfgClockStyle.value = data.clockStyle || 'normal';
+    this.$.cfgClockColor.value = data.clockColor || '#ffffff';
+
+    // Quote settings
+    this.$.cfgQuoteFont.value = data.quoteFont || 'system';
+    this.$.cfgQuoteSize.value = data.quoteSize || 'medium';
+    this.$.cfgQuoteCorner.checked = !!data.quoteCorner;
+
+    // Timer style
+    this.$.cfgTimerStyle.value = data.timerStyle || 'ring';
   }
 
   saveSettingsFromForm() {
@@ -928,6 +1158,21 @@ class FocusController {
 
     // Chime
     this.state.data.chimeEnabled = this.$.cfgChimeToggle.checked;
+
+    // Clock settings
+    this.state.data.clockFont = this.$.cfgClockFont.value;
+    this.state.data.clockSize = this.$.cfgClockSize.value;
+    this.state.data.clockFormat = this.$.cfgClockFormat.value;
+    this.state.data.clockStyle = this.$.cfgClockStyle.value;
+    this.state.data.clockColor = this.$.cfgClockColor.value;
+
+    // Quote settings
+    this.state.data.quoteFont = this.$.cfgQuoteFont.value;
+    this.state.data.quoteSize = this.$.cfgQuoteSize.value;
+    this.state.data.quoteCorner = this.$.cfgQuoteCorner.checked;
+
+    // Timer style
+    this.state.data.timerStyle = this.$.cfgTimerStyle.value;
 
     this.state.save();
     this.resetTimer();

@@ -20,6 +20,8 @@
     <!-- Top bar -->
     <header class="topbar">
       <div class="topbar-left">
+        <!-- App name visible while working (top left) -->
+        <span class="app-name-working" id="appNameWorking">POMODORO</span>
         <span class="mode-pill" id="modePill">
           <span class="mode-dot"></span>
           <span class="mode-pill-text" id="modePillText">Focus</span>
@@ -31,6 +33,12 @@
       </div>
 
       <div class="topbar-right">
+        <!-- Quotes in top right corner -->
+        <div class="quote-corner" id="quoteCorner">
+          <p class="quote-text-corner" id="quoteTextCorner">"The secret of getting ahead is getting started."</p>
+          <p class="quote-author-corner" id="quoteAuthorCorner">Mark Twain</p>
+        </div>
+
         <!-- Session tracker dots -->
         <span class="session-tracker" id="sessionTracker" title="Session progress">
           <span class="session-dot active"></span>
@@ -87,6 +95,43 @@
               <span class="flowtime-earned-text" id="flowtimeEarnedText">Earned Rest: 0m</span>
               <span class="flowtime-ratio-hint">5:1 Flowtime Ratio</span>
             </div>
+
+            <!-- Timer Style Variants -->
+            <div class="timer-variant timer-progress-wrap" id="timerProgressWrap" style="display:none;">
+              <div class="timer-progress-bar-label">Focus Progress</div>
+              <div class="timer-progress-bar">
+                <div class="timer-progress-bar-fill" id="timerProgressFill"></div>
+              </div>
+            </div>
+
+            <div class="timer-variant timer-gauge-wrap" id="timerGaugeWrap" style="display:none;">
+              <div class="timer-gauge">
+                <svg viewBox="0 0 200 200">
+                  <circle class="gauge-track" cx="100" cy="100" r="80" />
+                  <circle class="gauge-progress" id="timerGaugeProgress" cx="100" cy="100" r="80" />
+                </svg>
+                <div class="timer-gauge-center" id="timerGaugeCenter">
+                  <span class="timer-time" id="timerGaugeTime">25:00</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="timer-variant timer-dots-wrap" id="timerDotsWrap" style="display:none;">
+              <div class="timer-dot-matrix" id="timerDotMatrix"></div>
+            </div>
+
+            <div class="timer-variant timer-pie-wrap" id="timerPieWrap" style="display:none;">
+              <div class="timer-pie">
+                <svg viewBox="0 0 180 180">
+                  <circle class="pie-track" cx="90" cy="90" r="75" />
+                  <circle class="pie-progress" id="timerPieProgress" cx="90" cy="90" r="75" />
+                </svg>
+                <div class="timer-pie-center" id="timerPieCenter">
+                  <span class="timer-time" id="timerPieTime">25:00</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -98,8 +143,9 @@
         </div>
       </div>
 
-      <!-- Quote -->
-      <div class="quote-block" id="quoteBlock">
+      <!-- Quote (moved to top right corner in header) -->
+      <!-- <div class="quote-block" id="quoteBlock"> kept in DOM for reference, hidden via CSS -->
+      <div class="quote-block" id="quoteBlock" style="display:none;">
         <p class="quote-text" id="quoteText">"The secret of getting ahead is getting started."</p>
         <p class="quote-author" id="quoteAuthor">Mark Twain</p>
       </div>
@@ -129,6 +175,22 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="5 4 15 12 5 20 5 4"></polygon>
             <line x1="19" y1="5" x2="19" y2="19"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Bottom corner settings buttons (small, glassy, tucked away) -->
+      <div class="corner-settings">
+        <button class="corner-btn corner-btn-left" id="cornerSettingsLeft" onclick="window.openSettings('tab-appearance')" title="Appearance (A)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+        <button class="corner-btn corner-btn-right" id="cornerSettingsRight" onclick="window.openSettings('tab-timer')" title="Timer (T)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
         </button>
       </div>
@@ -260,6 +322,23 @@
           </div>
         </div>
 
+        <!-- Timer Style Settings -->
+        <div class="settings-group">
+          <label class="settings-label">Focus Timer Style</label>
+          <div class="input-field">
+            <label for="cfgTimerStyle">Display Style</label>
+            <select id="cfgTimerStyle">
+              <option value="ring">Progress Ring (Current)</option>
+              <option value="progress">Progress Bar</option>
+              <option value="gauge">Gauge / Donut</option>
+              <option value="dots">Dot Matrix</option>
+              <option value="pie">Pie Chart</option>
+              <option value="none">None (Notifications Only)</option>
+            </select>
+          </div>
+          <p class="settings-hint">Choose how the focus timer is visualized during a session. "None" hides the timer and only sends notifications.</p>
+        </div>
+
         <!-- Super-Pomodoro Specific Config (Shown when Super-Pomodoro is selected) -->
         <div id="superTimerSettings" style="display:none;">
           <div class="settings-section-header">
@@ -347,6 +426,146 @@
               <span class="fluid-mode-sub">Pure pitch black canvas. Zero GPU/CPU overhead. Maximum battery saver.</span>
             </div>
 
+            <div class="fluid-mode-card" data-fluid="thermal">
+              <span class="fluid-mode-title">Thermal Heat Map</span>
+              <span class="fluid-mode-sub">Very slow shifting gradient noise field.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="cotton">
+              <span class="fluid-mode-title">Cotton Drift</span>
+              <span class="fluid-mode-sub">Soft puffy particles floating slowly upward.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="ripples">
+              <span class="fluid-mode-title">Slow Ripples</span>
+              <span class="fluid-mode-sub">Slow expanding concentric rings.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="trees">
+              <span class="fluid-mode-title">Minimalist Trees</span>
+              <span class="fluid-mode-sub">Silhouettes swaying gently in the wind.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="horizon">
+              <span class="fluid-mode-title">Horizon</span>
+              <span class="fluid-mode-sub">Slow moving color band across the screen.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="sand">
+              <span class="fluid-mode-title">Sand Dune</span>
+              <span class="fluid-mode-sub">Slow flowing sand dune lines.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="ribbon">
+              <span class="fluid-mode-title">Metallic Ribbon</span>
+              <span class="fluid-mode-sub">Slow flowing metallic band.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="sonar">
+              <span class="fluid-mode-title">Sonar</span>
+              <span class="fluid-mode-sub">Slow expanding rings from center.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="prisms">
+              <span class="fluid-mode-title">Prisms</span>
+              <span class="fluid-mode-sub">Slow rotating translucent geometric shapes.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="clouds">
+              <span class="fluid-mode-title">Minimalist Clouds</span>
+              <span class="fluid-mode-sub">Slow drifting clouds.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="silk">
+              <span class="fluid-mode-title">Silk</span>
+              <span class="fluid-mode-sub">Slow flowing fabric-like ribbons.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="sunset">
+              <span class="fluid-mode-title">Sunset</span>
+              <span class="fluid-mode-sub">Slow color gradient sky.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="mountains">
+              <span class="fluid-mode-title">Mountains</span>
+              <span class="fluid-mode-sub">Slowly zooming past layered silhouettes.</span>
+            </div>
+
+            <div class="fluid-mode-card" data-fluid="lava">
+              <span class="fluid-mode-title">Lava Lamp</span>
+              <span class="fluid-mode-sub">Slow floating blobs.</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Clock Settings -->
+        <div class="settings-group">
+          <label class="settings-label">Clock</label>
+          <div class="input-field">
+            <label for="cfgClockFont">Font</label>
+            <select id="cfgClockFont">
+              <option value="system">System (San Francisco)</option>
+              <option value="monospace">Monospace</option>
+              <option value="serif">Serif (New York)</option>
+              <option value="rounded">Rounded</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label for="cfgClockSize">Size</label>
+            <select id="cfgClockSize">
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large</option>
+              <option value="xlarge">Extra Large</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label for="cfgClockFormat">Format</label>
+            <select id="cfgClockFormat">
+              <option value="12">12-hour (AM/PM)</option>
+              <option value="24">24-hour</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label for="cfgClockStyle">Style</label>
+            <select id="cfgClockStyle">
+              <option value="normal">Normal</option>
+              <option value="flip">Flip Clock</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label for="cfgClockColor">Color</label>
+            <input type="color" id="cfgClockColor" value="#ffffff">
+          </div>
+        </div>
+
+        <!-- Quote Style -->
+        <div class="settings-group">
+          <label class="settings-label">Quote Style</label>
+          <div class="input-field">
+            <label for="cfgQuoteFont">Quote Font</label>
+            <select id="cfgQuoteFont">
+              <option value="system">System</option>
+              <option value="serif">Serif</option>
+              <option value="monospace">Monospace</option>
+              <option value="italic">Italic</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label for="cfgQuoteSize">Quote Size</label>
+            <select id="cfgQuoteSize">
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </div>
+          <div class="toggle-row">
+            <span>Show quotes in top-right corner</span>
+            <label class="switch">
+              <input type="checkbox" id="cfgQuoteCorner" checked>
+              <span class="slider"></span>
+            </label>
           </div>
         </div>
 

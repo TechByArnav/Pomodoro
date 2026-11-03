@@ -1079,3 +1079,276 @@ input:checked + .slider::before {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Top Bar Extensions ── */
+.app-name-working {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--steel);
+  text-transform: uppercase;
+  margin-right: 16px;
+  display: none;
+  user-select: none;
+}
+
+/* Quotes in top right corner */
+.quote-corner {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  text-align: right;
+  z-index: 10;
+  pointer-events: none;
+  max-width: 200px;
+}
+.quote-text-corner {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ash);
+  font-style: italic;
+  font-weight: 500;
+  margin: 0 0 2px 0;
+}
+.quote-author-corner {
+  font-size: 10px;
+  color: var(--steel);
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ── Corner Settings Buttons ── */
+.corner-settings {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 20;
+  pointer-events: auto;
+}
+.corner-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--silver);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto !important;
+}
+.corner-btn:hover {
+  border-color: var(--crimson);
+  background: rgba(220, 20, 60, 0.15);
+  color: var(--crimson);
+  transform: scale(1.05);
+}
+.corner-btn:active { transform: scale(0.95); }
+
+/* ── Clock Customization ── */
+.clock-flip {
+  display: inline-flex;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.clock-flip .flip-digit {
+  display: inline-block;
+  min-width: 28px;
+  text-align: center;
+  font-family: var(--font);
+  font-weight: 700;
+}
+.clock-flip .flip-card {
+  display: inline-block;
+  perspective: 100px;
+}
+.clock-flip .flip-card-top,
+.clock-flip .flip-card-bottom {
+  display: inline-block;
+  min-width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  background: var(--obsidian);
+  border: 1px solid var(--graphite);
+  border-bottom: none;
+  overflow: hidden;
+  position: relative;
+}
+.clock-flip .flip-card-top {
+  border-radius: 4px 4px 0 0;
+  z-index: 2;
+}
+.clock-flip .flip-card-bottom {
+  border-radius: 0 0 4px 4px;
+  border-top: none;
+  border-bottom: 1px solid var(--graphite);
+}
+.clock-flip .flip-card-top::after,
+.clock-flip .flip-card-bottom::after {
+  content: attr(data-value);
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(24px, 4vw, 40px);
+  font-weight: 700;
+}
+.clock-flip .flip-card-top::after {
+  transform-origin: bottom;
+  transform: rotateX(0deg);
+}
+.clock-flip .flip-card-bottom::after {
+  transform-origin: top;
+  transform: rotateX(0deg);
+}
+
+/* ── Timer Style Variants ── */
+.timer-progress-bar {
+  width: 260px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.timer-progress-bar-fill {
+  height: 100%;
+  background: var(--crimson);
+  width: 100%;
+  transition: width 0.1s linear;
+}
+.timer-progress-bar-label {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: var(--ash);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Gauge / Donut */
+.timer-gauge {
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+.timer-gauge svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.timer-gauge .gauge-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 8;
+}
+.timer-gauge .gauge-progress {
+  fill: none;
+  stroke: var(--crimson);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+.timer-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dot Matrix */
+.timer-dot-matrix {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.timer-dot-matrix .dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: background 0.1s, transform 0.1s;
+}
+.timer-dot-matrix .dot.active {
+  background: var(--crimson);
+  box-shadow: 0 0 12px var(--crimson-glow);
+  transform: scale(1.2);
+}
+
+/* Pie Chart */
+.timer-pie {
+  width: 180px;
+  height: 180px;
+  position: relative;
+}
+.timer-pie svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.timer-pie .pie-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 10;
+}
+.timer-pie .pie-progress {
+  fill: none;
+  stroke: var(--crimson);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+.timer-pie-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Quote Block (hidden, moved to corner) ── */
+.quote-block {
+  display: none !important;
+}
+
+/* ── Settings Input Extensions ── */
+.settings-inputs-grid select {
+  width: 100%;
+  background: var(--obsidian);
+  border: 1px solid var(--graphite);
+  color: var(--pure-white);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+.settings-inputs-grid select:focus {
+  border-color: var(--crimson);
+  box-shadow: 0 0 0 3px var(--crimson-glow);
+}
+.settings-inputs-grid input[type="color"] {
+  width: 100%;
+  height: 44px;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  cursor: pointer;
+}
+
