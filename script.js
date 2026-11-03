@@ -953,13 +953,34 @@ class FocusController {
   }
 }
 
+// Global quick triggers
+window.openSettings = function (tabId) {
+  if (window.pomodoroApp) {
+    window.pomodoroApp.openSettings(tabId);
+  }
+};
+window.closeSettings = function () {
+  if (window.pomodoroApp) {
+    window.pomodoroApp.closeSettings();
+  }
+};
+
 // ── Application Initialization ─────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Start fluid engine
-  if (typeof initFluid === 'function') {
-    initFluid();
+  try {
+    // 1. Initialize controller first so all UI buttons and shortcuts are active
+    window.pomodoroApp = new FocusController();
+  } catch (err) {
+    console.error('FocusController init error:', err);
   }
 
-  // Start Focus Controller
-  window.pomodoroApp = new FocusController();
+  try {
+    // 2. Initialize atmospheric background
+    if (typeof initFluid === 'function') {
+      initFluid();
+    }
+  } catch (err) {
+    console.warn('Fluid init note:', err);
+  }
 });
+

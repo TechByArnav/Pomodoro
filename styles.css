@@ -195,7 +195,6 @@ input, button, select, textarea {
   100% { transform: scale(1); }
 }
 
-/* Topbar pill button & icon button */
 .topbar-pill-btn {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--graphite);
@@ -207,6 +206,7 @@ input, button, select, textarea {
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+  pointer-events: auto !important;
 }
 .topbar-pill-btn:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -218,14 +218,17 @@ input, button, select, textarea {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--graphite);
   color: var(--silver);
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 5;
 }
 .topbar-icon-btn:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -594,6 +597,7 @@ kbd {
   transform: scale(0.96) translateY(8px);
   transition: transform 0.35s var(--ease-out-expo);
   overflow: hidden;
+  pointer-events: auto !important;
 }
 .modal-backdrop.open .modal-dialog {
   transform: scale(1) translateY(0);
