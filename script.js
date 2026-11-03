@@ -242,12 +242,7 @@ class FocusController {
       modePillText:        document.getElementById('modePillText'),
       modeDot:             document.querySelector('.mode-dot'),
       sessionTracker:      document.getElementById('sessionTracker'),
-      methodBadgeBtn:      document.getElementById('methodBadgeBtn'),
-      methodBadgeText:     document.getElementById('methodBadgeText'),
       settingsBtn:         document.getElementById('settingsBtn'),
-
-      // App name (visible while working)
-      appNameWorking:      document.getElementById('appNameWorking'),
 
       // Greeting & Clock
       greetingBlock:       document.getElementById('greetingBlock'),
@@ -283,13 +278,14 @@ class FocusController {
       flowFinishWrap:      document.getElementById('flowFinishWrap'),
       flowFinishBtn:       document.getElementById('flowFinishBtn'),
 
-      // Quote & Controls
-      quoteBlock:          document.getElementById('quoteBlock'),
-      quoteText:           document.getElementById('quoteText'),
-      quoteAuthor:         document.getElementById('quoteAuthor'),
-      quoteCorner:         document.getElementById('quoteCorner'),
-      quoteTextCorner:     document.getElementById('quoteTextCorner'),
-      quoteAuthorCorner:   document.getElementById('quoteAuthorCorner'),
+      // Quote (main content, clean position)
+      quoteMain:           document.getElementById('quoteMain'),
+      quoteTextMain:       document.getElementById('quoteTextMain'),
+      quoteAuthorMain:     document.getElementById('quoteAuthorMain'),
+      quoteMainTimer:      document.getElementById('quoteMainTimer'),
+      quoteTextMainTimer:  document.getElementById('quoteTextMainTimer'),
+      quoteAuthorMainTimer:document.getElementById('quoteAuthorMainTimer'),
+
       startBtn:            document.getElementById('startBtn'),
       resetBtn:            document.getElementById('resetBtn'),
       skipBtn:             document.getElementById('skipBtn'),
@@ -552,14 +548,6 @@ class FocusController {
     const method = this.state.data.method;
     const info = METHOD_INFO[method] || METHOD_INFO.classic;
 
-    // Topbar method badge
-    this.$.methodBadgeText.textContent = info.name;
-
-    // App name visible while working (top left)
-    if (this.$.appNameWorking) {
-      this.$.appNameWorking.style.display = this.hasStarted ? 'block' : 'none';
-    }
-
     // Greeting subline
     if (method === 'classic') {
       this.$.greetingSub.textContent = `Classic Pomodoro · ${this.state.data.timings.classic.work}m Focus / ${this.state.data.timings.classic.shortBreak}m Break`;
@@ -584,18 +572,6 @@ class FocusController {
     this.$.flowtimeEarnedWrap.style.display = isPhase2Stopwatch ? 'flex' : 'none';
     this.$.flowFinishWrap.style.display = isPhase2Stopwatch ? 'block' : 'none';
 
-    // Mode Pill
-    let pillText = 'Focus';
-    if (this.currentMode === 'shortBreak') pillText = 'Short Break';
-    if (this.currentMode === 'longBreak')  pillText = 'Long Break';
-
-    if (isSuper) {
-      if (this.currentMode === 'work') pillText = `Phase ${this.superPhase} Focus`;
-      else pillText = `Phase ${this.superPhase} Break`;
-    }
-    this.$.modePillText.textContent = pillText;
-    this.$.modePill.classList.toggle('break-mode', this.currentMode !== 'work');
-
     // Label under timer
     this.$.timerLabel.textContent = this.currentMode === 'work' ? 'focus' : 'rest';
   }
@@ -615,7 +591,6 @@ class FocusController {
     this.isRunning = true;
     this.setPlayPauseIcon(true);
     this.$.timerRingWrap.closest('.timer-block')?.classList.add('timer-running');
-    this.$.modeDot.classList.add('pulsing');
 
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
@@ -630,7 +605,6 @@ class FocusController {
     this.isRunning = false;
     this.setPlayPauseIcon(false);
     this.$.timerRingWrap.closest('.timer-block')?.classList.remove('timer-running');
-    this.$.modeDot.classList.remove('pulsing');
     clearInterval(this.interval);
     this.interval = null;
   }
@@ -868,7 +842,7 @@ class FocusController {
     const name = this.state.data.appName || 'Pomodoro';
 
     if (this.hasStarted) {
-      document.title = `${t} · ${this.$.modePillText.textContent} — ${name}`;
+      document.title = `${t} · ${this.$.timerLabel.textContent} — ${name}`;
     } else {
       document.title = `${name} — Focus`;
     }
@@ -883,25 +857,12 @@ class FocusController {
     this.lastQuoteIdx = idx;
 
     const q = pool[idx];
-    const block = this.$.quoteBlock;
-    block.classList.add('fade-out');
-    setTimeout(() => {
-      this.$.quoteText.textContent = `\u201C${q.text}\u201D`;
-      this.$.quoteAuthor.textContent = q.author;
-      block.classList.remove('fade-out');
-    }, 450);
 
-    // Also update corner quotes
-    if (this.$.quoteCorner) {
-      if (this.state.data.quoteCorner) {
-        this.$.quoteCorner.style.display = 'block';
-      } else {
-        this.$.quoteCorner.style.display = 'none';
-      }
-      this.$.quoteTextCorner.textContent = `\u201C${q.text}\u201D`;
-      this.$.quoteAuthorCorner.textContent = q.author;
+    // Update both quote-main elements (greeting + timer)
+    const updateQuote = (textEl, authorEl) => {
+      textEl.textContent = `\u201C${q.text}\u201D`;
+      authorEl.textContent = q.author;
 
-      // Apply quote styling
       const data = this.state.data;
       const qFontMap = {
         system: '-apple-system, system-ui, sans-serif',
@@ -909,15 +870,25 @@ class FocusController {
         monospace: '"SF Mono", "Courier New", monospace',
         italic: '-apple-system, system-ui, sans-serif',
       };
-      this.$.quoteTextCorner.style.fontFamily = qFontMap[data.quoteFont || 'system'] || qFontMap.system;
-      this.$.quoteTextCorner.style.fontStyle = data.quoteFont === 'italic' ? 'italic' : 'normal';
+      textEl.style.fontFamily = qFontMap[data.quoteFont || 'system'] || qFontMap.system;
+      textEl.style.fontStyle = data.quoteFont === 'italic' ? 'italic' : 'normal';
 
       const qSizeMap = {
         small: '11px',
         medium: '12px',
         large: '14px',
       };
-      this.$.quoteTextCorner.style.fontSize = qSizeMap[data.quoteSize || 'medium'] || qSizeMap.medium;
+      textEl.style.fontSize = qSizeMap[data.quoteSize || 'medium'] || qSizeMap.medium;
+    };
+
+    if (this.state.data.quoteCorner) {
+      updateQuote(this.$.quoteTextMain, this.$.quoteAuthorMain);
+      updateQuote(this.$.quoteTextMainTimer, this.$.quoteAuthorMainTimer);
+    } else {
+      this.$.quoteTextMain.textContent = '';
+      this.$.quoteAuthorMain.textContent = '';
+      this.$.quoteTextMainTimer.textContent = '';
+      this.$.quoteAuthorMainTimer.textContent = '';
     }
   }
 
@@ -980,9 +951,6 @@ class FocusController {
 
     // Settings Modal Triggers
     this.$.settingsBtn.addEventListener('click', () => this.openSettings());
-    this.$.methodBadgeBtn.addEventListener('click', () => {
-      this.openSettings('tab-method');
-    });
     this.$.modalCloseBtn.addEventListener('click', () => this.closeSettings());
     this.$.modalBackdrop.addEventListener('click', (e) => {
       if (e.target === this.$.modalBackdrop) this.closeSettings();

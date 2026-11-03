@@ -1080,37 +1080,26 @@ input:checked + .slider::before {
   }
 }
 
-/* ── Top Bar Extensions ── */
-.app-name-working {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--steel);
-  text-transform: uppercase;
-  margin-right: 16px;
-  display: none;
-  user-select: none;
-}
-
-/* Quotes in top right corner */
-.quote-corner {
-  position: absolute;
-  top: 20px;
-  right: 28px;
-  text-align: right;
+/* ── Quote (main content, clean position) ── */
+.quote-main {
+  text-align: left;
+  max-width: 500px;
+  margin: 0 0 24px 0;
+  padding: 0 24px;
+  position: relative;
   z-index: 10;
   pointer-events: none;
-  max-width: 200px;
 }
-.quote-text-corner {
-  font-size: 12px;
-  line-height: 1.4;
+.quote-text-main {
+  font-size: 14px;
+  line-height: 1.6;
   color: var(--ash);
   font-style: italic;
   font-weight: 500;
-  margin: 0 0 2px 0;
+  margin: 0 0 4px 0;
 }
-.quote-author-corner {
-  font-size: 10px;
+.quote-author-main {
+  font-size: 11px;
   color: var(--steel);
   font-weight: 600;
   margin: 0;

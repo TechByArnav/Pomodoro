@@ -20,39 +20,22 @@
     <!-- Top bar -->
     <header class="topbar">
       <div class="topbar-left">
-        <!-- App name visible while working (top left) -->
-        <span class="app-name-working" id="appNameWorking">POMODORO</span>
-        <span class="mode-pill" id="modePill">
-          <span class="mode-dot"></span>
-          <span class="mode-pill-text" id="modePillText">Focus</span>
-        </span>
-      </div>
-
-      <div class="topbar-center">
+        <!-- App name / logo (always visible, top left) -->
         <span class="logo-mark" id="logoMark">POMODORO</span>
       </div>
 
-      <div class="topbar-right">
-        <!-- Quotes in top right corner -->
-        <div class="quote-corner" id="quoteCorner">
-          <p class="quote-text-corner" id="quoteTextCorner">"The secret of getting ahead is getting started."</p>
-          <p class="quote-author-corner" id="quoteAuthorCorner">Mark Twain</p>
-        </div>
-
-        <!-- Session tracker dots -->
+      <div class="topbar-center">
+        <!-- Session tracker dots (minimal, center) -->
         <span class="session-tracker" id="sessionTracker" title="Session progress">
           <span class="session-dot active"></span>
           <span class="session-dot"></span>
           <span class="session-dot"></span>
           <span class="session-dot"></span>
         </span>
+      </div>
 
-        <!-- Method badge (quick switch indicator) -->
-        <button class="topbar-pill-btn" id="methodBadgeBtn" onclick="window.openSettings('tab-method')" title="Current productivity method">
-          <span class="method-badge-text" id="methodBadgeText">Pomodoro</span>
-        </button>
-
-        <!-- Settings toggle button -->
+      <div class="topbar-right">
+        <!-- Settings toggle button (only top-right item) -->
         <button class="topbar-icon-btn" id="settingsBtn" onclick="window.openSettings()" title="Settings (S)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
@@ -67,6 +50,11 @@
 
       <!-- Greeting + Clock (shown when idle before first start) -->
       <div class="greeting-block" id="greetingBlock">
+        <!-- Quote (clean position above greeting, left side) -->
+        <div class="quote-main" id="quoteMain">
+          <p class="quote-text-main" id="quoteTextMain">"The secret of getting ahead is getting started."</p>
+          <p class="quote-author-main" id="quoteAuthorMain">Mark Twain</p>
+        </div>
         <p class="greeting-text" id="greetingText">Good afternoon.</p>
         <h1 class="clock" id="clock">4:20 PM</h1>
         <p class="greeting-sub" id="greetingSub">Classic Pomodoro · 25m Focus / 5m Break</p>
@@ -79,6 +67,12 @@
         <div class="stage-badge-container" id="stageBadgeContainer" style="display:none;">
           <span class="stage-badge" id="stageBadge">Phase 1: Ignition Block</span>
           <span class="stage-hint" id="stageHint">Beat procrastination · 20m sprint</span>
+        </div>
+
+        <!-- Quote (clean position above timer) -->
+        <div class="quote-main" id="quoteMainTimer">
+          <p class="quote-text-main" id="quoteTextMainTimer">"The secret of getting ahead is getting started."</p>
+          <p class="quote-author-main" id="quoteAuthorMainTimer">Mark Twain</p>
         </div>
 
         <div class="timer-ring-wrap">
@@ -141,13 +135,6 @@
             Finish Flow Block & Take Rest
           </button>
         </div>
-      </div>
-
-      <!-- Quote (moved to top right corner in header) -->
-      <!-- <div class="quote-block" id="quoteBlock"> kept in DOM for reference, hidden via CSS -->
-      <div class="quote-block" id="quoteBlock" style="display:none;">
-        <p class="quote-text" id="quoteText">"The secret of getting ahead is getting started."</p>
-        <p class="quote-author" id="quoteAuthor">Mark Twain</p>
       </div>
 
       <!-- Controls -->
