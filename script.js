@@ -442,7 +442,7 @@ class FocusController {
     if (method === 'classic') {
       this.$.greetingSub.textContent = `Classic Pomodoro · ${this.state.data.timings.classic.work}m Focus / ${this.state.data.timings.classic.shortBreak}m Break`;
     } else if (method === 'super') {
-      this.$.greetingSub.textContent = `Super-Pomodoro · 3 Stages (Ignition &rarr; Flow &rarr; Animedoro)`;
+      this.$.greetingSub.textContent = `Super-Pomodoro · 3 Stages (Ignition → Flow → Animedoro)`;
     } else {
       const t = this.state.data.timings[method];
       this.$.greetingSub.textContent = `${info.title} · ${t.work}m Work / ${t.shortBreak}m Break`;
