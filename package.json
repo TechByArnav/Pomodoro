@@ -1,0 +1,67 @@
+{
+  "name": "pomodoro-focus",
+  "productName": "Pomodoro Focus",
+  "version": "1.0.0",
+  "description": "Minimalist Focus Sanctuary — Customizable Pomodoro Timer Desktop App",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": ["pomodoro", "timer", "focus", "productivity", "electron"],
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId": "com.pomodoro.focus",
+    "productName": "Pomodoro Focus",
+    "copyright": "Copyright © 2024 Pomodoro Focus",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "index.html",
+      "script.js",
+      "styles.css",
+      "fluid.js",
+      "main.js",
+      "preload.js",
+      "designs.md"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "publisherName": "Pomodoro Focus"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Pomodoro Focus"
+    }
+  }
+}

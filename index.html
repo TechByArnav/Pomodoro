@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="description" content="Minimalist Focus Sanctuary — Customizable Pomodoro, Super-Pomodoro, 52/17, Ultradian & Animedoro Timer.">
-  <meta name="theme-color" content="#0a0a0a">
+  <meta name="theme-color" content="#000000">
   <title>Pomodoro — Focus</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍅</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -17,15 +20,13 @@
   <!-- Content overlay -->
   <div class="app" id="app">
 
-    <!-- Top bar -->
+    <!-- Top Bar -->
     <header class="topbar">
       <div class="topbar-left">
-        <!-- App name / logo (always visible, top left) -->
-        <span class="logo-mark" id="logoMark">POMODORO</span>
+        <span class="logo-mark" id="logoMark">DragonFocus</span>
       </div>
 
       <div class="topbar-center">
-        <!-- Session tracker dots (minimal, center) -->
         <span class="session-tracker" id="sessionTracker" title="Session progress">
           <span class="session-dot active"></span>
           <span class="session-dot"></span>
@@ -34,45 +35,41 @@
         </span>
       </div>
 
-      <div class="topbar-right">
-        <!-- Settings toggle button (only top-right item) -->
-        <button class="topbar-icon-btn" id="settingsBtn" onclick="window.openSettings()" title="Settings (S)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-          </svg>
-        </button>
-      </div>
+      <div class="topbar-right"></div>
     </header>
 
-    <!-- Main — vertically centered dashboard -->
-    <main class="dashboard">
+    <!-- Settings Button (Bottom Left) -->
+    <button class="settings-bottom-left" id="settingsBtnBottom" onclick="window.openSettings()" title="Settings (S)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
 
-      <!-- Greeting + Clock (shown when idle before first start) -->
+    <!-- Screen reader live region -->
+    <div class="sr-only" id="liveRegion" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard" id="dashboard">
+
+      <!-- Quote (Top Right Corner) -->
+      <div class="quote-corner" id="quoteCorner">
+        <p class="quote-text-corner" id="quoteTextCorner">"The secret of getting ahead is getting started."</p>
+        <p class="quote-author-corner" id="quoteAuthorCorner">Mark Twain</p>
+      </div>
+
+      <!-- Greeting + Clock (Idle state) -->
       <div class="greeting-block" id="greetingBlock">
-        <!-- Quote (clean position above greeting, left side) -->
-        <div class="quote-main" id="quoteMain">
-          <p class="quote-text-main" id="quoteTextMain">"The secret of getting ahead is getting started."</p>
-          <p class="quote-author-main" id="quoteAuthorMain">Mark Twain</p>
-        </div>
         <p class="greeting-text" id="greetingText">Good afternoon.</p>
         <h1 class="clock" id="clock">4:20 PM</h1>
         <p class="greeting-sub" id="greetingSub">Classic Pomodoro · 25m Focus / 5m Break</p>
       </div>
 
-      <!-- Timer display (replaces clock during active session) -->
+      <!-- Timer display (Active state) -->
       <div class="timer-block" id="timerBlock">
-
-        <!-- Super-Pomodoro Phase Badge (visible in Super-Pomodoro mode) -->
         <div class="stage-badge-container" id="stageBadgeContainer" style="display:none;">
           <span class="stage-badge" id="stageBadge">Phase 1: Ignition Block</span>
           <span class="stage-hint" id="stageHint">Beat procrastination · 20m sprint</span>
-        </div>
-
-        <!-- Quote (clean position above timer) -->
-        <div class="quote-main" id="quoteMainTimer">
-          <p class="quote-text-main" id="quoteTextMainTimer">"The secret of getting ahead is getting started."</p>
-          <p class="quote-author-main" id="quoteAuthorMainTimer">Mark Twain</p>
         </div>
 
         <div class="timer-ring-wrap">
@@ -84,7 +81,6 @@
             <span class="timer-time" id="timerTime">25:00</span>
             <span class="timer-label" id="timerLabel">focus</span>
 
-            <!-- Flowtime live calculation badge (for Super-Pomodoro Phase 2 Stopwatch) -->
             <div class="flowtime-earned-wrap" id="flowtimeEarnedWrap" style="display:none;">
               <span class="flowtime-earned-text" id="flowtimeEarnedText">Earned Rest: 0m</span>
               <span class="flowtime-ratio-hint">5:1 Flowtime Ratio</span>
@@ -125,15 +121,16 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
-        <!-- Super-Pomodoro Phase 2 "Finish Flow Block" CTA -->
+        <div class="active-task-pill" id="activeTaskPill" style="display:none;">
+          <span class="active-task-label">Working on</span>
+          <span class="active-task-name" id="activeTaskName"></span>
+        </div>
+
         <div class="flow-finish-wrap" id="flowFinishWrap" style="display:none;">
-          <button class="flow-finish-btn" id="flowFinishBtn">
-            Finish Flow Block & Take Rest
-          </button>
+          <button class="flow-finish-btn" id="flowFinishBtn">Finish Flow Block & Take Rest</button>
         </div>
       </div>
 
@@ -147,11 +144,9 @@
         </button>
 
         <button class="ctrl-btn ctrl-primary" id="startBtn" title="Start / Pause (Space)">
-          <!-- Play icon -->
           <svg class="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
             <polygon points="6 3 20 12 6 21 6 3"></polygon>
           </svg>
-          <!-- Pause icon (hidden by default) -->
           <svg class="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none">
             <rect x="5" y="3" width="4" height="18"></rect>
             <rect x="15" y="3" width="4" height="18"></rect>
@@ -166,52 +161,73 @@
         </button>
       </div>
 
-      <!-- Bottom corner settings buttons (small, glassy, tucked away) -->
-      <div class="corner-settings">
-        <button class="corner-btn corner-btn-left" id="cornerSettingsLeft" onclick="window.openSettings('tab-appearance')" title="Appearance (A)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="2"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      <!-- Tasks Toggle Button (Bottom Right) -->
+      <button class="tasks-toggle-btn" id="tasksToggleBtn" title="Tasks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+        <span class="tasks-count" id="tasksCount">0</span>
+      </button>
+
+      <!-- Tasks Panel (Slide-out from Right) -->
+      <div class="tasks-panel" id="tasksPanel">
+        <div class="tasks-panel-header">
+          <span class="tasks-title">Tasks</span>
+          <button class="tasks-close-btn" id="tasksCloseBtn" title="Close tasks">&times;</button>
+        </div>
+        <div class="tasks-input-wrap">
+          <input type="text" id="taskInput" placeholder="Add a task..." maxlength="100">
+          <button id="addTaskBtn" title="Add task">+</button>
+        </div>
+        <div class="tasks-list" id="tasksList"></div>
+        <div class="calendar-section" id="calendarSection" style="display:none;">
+          <div class="tasks-panel-header" style="border-top:1px solid var(--border-subtle);margin-top:8px;">
+            <span class="tasks-title">Upcoming events</span>
+          </div>
+          <div class="tasks-list" id="eventsList"></div>
+        </div>
+        <div class="tasks-empty" id="tasksEmpty" style="display:none;">
+          <svg class="tasks-empty-ill" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
           </svg>
-        </button>
-        <button class="corner-btn corner-btn-right" id="cornerSettingsRight" onclick="window.openSettings('tab-timer')" title="Timer (T)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-        </button>
+          <p class="tasks-empty-title">No tasks yet</p>
+          <p class="tasks-empty-sub">Add one above to focus on something specific.</p>
+        </div>
       </div>
 
     </main>
 
-    <!-- Keyboard hint bar -->
+    <!-- Keyboard Hint Bar -->
     <footer class="hint-bar">
       <span class="hint"><kbd>Space</kbd> play / pause</span>
       <span class="hint"><kbd>R</kbd> reset</span>
       <span class="hint"><kbd>K</kbd> skip</span>
+      <span class="hint"><kbd>T</kbd> tasks</span>
       <span class="hint"><kbd>S</kbd> settings</span>
     </footer>
 
   </div>
 
-  <!-- ─────────────────────────────────────────────────────────────
-       SETTINGS MODAL (Minimalist Obsidian Sheet)
-       ───────────────────────────────────────────────────────────── -->
+  <!-- SETTINGS MODAL -->
   <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
     <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      
-      <!-- Modal Header -->
       <div class="modal-header">
         <h2 class="modal-title" id="modalTitle">Settings & Customization</h2>
         <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close settings">&times;</button>
       </div>
 
-      <!-- Modal Tabs -->
       <div class="modal-tabs">
         <button class="modal-tab active" data-tab="tab-method">Method</button>
         <button class="modal-tab" data-tab="tab-timer">Timers</button>
         <button class="modal-tab" data-tab="tab-appearance">Appearance</button>
         <button class="modal-tab" data-tab="tab-profile">Profile & Name</button>
+        <button class="modal-tab" data-tab="tab-tasks">Tasks</button>
       </div>
 
       <!-- Tab 1: Productivity Methods -->
@@ -219,7 +235,6 @@
         <div class="settings-group">
           <label class="settings-label">Select Productivity Framework</label>
           <div class="method-cards-grid" id="methodCardsGrid">
-            
             <div class="method-card active" data-method="classic">
               <div class="method-card-header">
                 <span class="method-card-title">Classic Pomodoro</span>
@@ -227,51 +242,44 @@
               </div>
               <p class="method-card-desc">The timeless 25/5 rhythm. 4 focused sprints followed by a 15-minute restorative long break.</p>
             </div>
-
             <div class="method-card" data-method="super">
               <div class="method-card-header">
                 <span class="method-card-title">Super-Pomodoro</span>
                 <span class="method-card-badge-special">3 Stages</span>
               </div>
-              <p class="method-card-desc">Adapts to cognitive peaks: Phase 1 (Ignition 20m) → Phase 2 (Deep Flow Stopwatch with 5:1 Flowtime Rest) → Phase 3 (Animedoro 50m Reward).</p>
+              <p class="method-card-desc">Phase 1 (Ignition 20m) → Phase 2 (Deep Flow Stopwatch) → Phase 3 (Animedoro 50m Reward).</p>
             </div>
-
             <div class="method-card" data-method="52_17">
               <div class="method-card-header">
                 <span class="method-card-title">52 / 17 Method</span>
                 <span class="method-card-badge">DeskTime</span>
               </div>
-              <p class="method-card-desc">The data-driven sprint rule: 52 minutes of intense distraction-free focus paired with 17 minutes of complete disconnection.</p>
+              <p class="method-card-desc">52 minutes intense focus paired with 17 minutes of total disconnection.</p>
             </div>
-
             <div class="method-card" data-method="ultradian">
               <div class="method-card-header">
                 <span class="method-card-title">Ultradian Rhythm</span>
                 <span class="method-card-badge">90 / 20</span>
               </div>
-              <p class="method-card-desc">Mirrors natural 90-minute human biological energy cycles. 90 minutes deep work & 20 minutes biological recovery.</p>
+              <p class="method-card-desc">90 minutes deep work & 20 minutes biological recovery.</p>
             </div>
-
             <div class="method-card" data-method="animedoro">
               <div class="method-card-header">
                 <span class="method-card-title">Animedoro</span>
                 <span class="method-card-badge">Reward Block</span>
               </div>
-              <p class="method-card-desc">50-minute deep push rewarded with 20 minutes of guilt-free media (one anime episode or TV show without ads).</p>
+              <p class="method-card-desc">50 minutes deep work rewarded with 20 minutes of media.</p>
             </div>
-
             <div class="method-card" data-method="desktime">
               <div class="method-card-header">
                 <span class="method-card-title">DeskTime 112 / 26</span>
                 <span class="method-card-badge">Deep Sprint</span>
               </div>
-              <p class="method-card-desc">DeskTime's post-remote work finding for extreme immersion: 112-minute deep flow sessions with 26-minute recovery walks.</p>
+              <p class="method-card-desc">112-minute deep flow sessions with 26-minute recovery walks.</p>
             </div>
-
           </div>
         </div>
 
-        <!-- Method Deep-Dive Explainer Card -->
         <div class="method-explainer-card" id="methodExplainerCard">
           <h4 class="explainer-title" id="explainerTitle">Classic Pomodoro</h4>
           <p class="explainer-body" id="explainerBody">
@@ -280,15 +288,13 @@
         </div>
       </div>
 
-      <!-- Tab 2: Custom Durations for Selected Method -->
+      <!-- Tab 2: Custom Durations -->
       <div class="tab-pane" id="tab-timer">
-        
         <div id="classicTimerSettings">
           <div class="settings-section-header">
             <h3>Custom Durations</h3>
             <p>Customize time in minutes for the active framework.</p>
           </div>
-
           <div class="settings-inputs-grid">
             <div class="input-field">
               <label for="cfgWorkDuration">Focus Session (min)</label>
@@ -309,13 +315,12 @@
           </div>
         </div>
 
-        <!-- Timer Style Settings -->
         <div class="settings-group">
           <label class="settings-label">Focus Timer Style</label>
           <div class="input-field">
             <label for="cfgTimerStyle">Display Style</label>
             <select id="cfgTimerStyle">
-              <option value="ring">Progress Ring (Current)</option>
+              <option value="ring">Progress Ring</option>
               <option value="progress">Progress Bar</option>
               <option value="gauge">Gauge / Donut</option>
               <option value="dots">Dot Matrix</option>
@@ -323,16 +328,14 @@
               <option value="none">None (Notifications Only)</option>
             </select>
           </div>
-          <p class="settings-hint">Choose how the focus timer is visualized during a session. "None" hides the timer and only sends notifications.</p>
+          <p class="settings-hint">Choose how the focus timer is visualized. "None" hides the timer and only sends notifications.</p>
         </div>
 
-        <!-- Super-Pomodoro Specific Config (Shown when Super-Pomodoro is selected) -->
         <div id="superTimerSettings" style="display:none;">
           <div class="settings-section-header">
             <h3>Super-Pomodoro 3-Stage Parameters</h3>
             <p>Configure each block of the cognitive surge workflow.</p>
           </div>
-
           <div class="settings-inputs-grid">
             <div class="input-field">
               <label for="cfgStage1Work">Phase 1 Ignition Work (min)</label>
@@ -364,17 +367,26 @@
             </div>
           </div>
         </div>
-
       </div>
 
-      <!-- Tab 3: Appearance & Visual Dynamics -->
+      <!-- Tab 3: Appearance -->
       <div class="tab-pane" id="tab-appearance">
-        
-        <!-- Accent Color -->
+        <div class="settings-group">
+          <label class="settings-label">Theme</label>
+          <div class="input-field">
+            <select id="cfgTheme">
+              <option value="dark">Dark (default)</option>
+              <option value="light">Light</option>
+              <option value="system">Follow system</option>
+            </select>
+          </div>
+          <p class="settings-hint">Switches the entire interface. Dark is optimized for focus.</p>
+        </div>
+
         <div class="settings-group">
           <label class="settings-label">Accent Color</label>
           <div class="color-swatches-grid">
-            <button class="color-swatch active" data-color="#dc143c" style="--swatch:#dc143c;" title="Crimson Ember (Default)"></button>
+            <button class="color-swatch active" data-color="#084c27" style="--swatch:#084c27;" title="Deep Pine Green"></button>
             <button class="color-swatch" data-color="#ff4300" style="--swatch:#ff4300;" title="Molten Orange"></button>
             <button class="color-swatch" data-color="#8b5cf6" style="--swatch:#8b5cf6;" title="Amethyst Violet"></button>
             <button class="color-swatch" data-color="#06b6d4" style="--swatch:#06b6d4;" title="Electric Cyan"></button>
@@ -388,113 +400,44 @@
           </div>
         </div>
 
-        <!-- Fluid / Background Simulation Style -->
         <div class="settings-group">
           <label class="settings-label">Background Atmosphere</label>
           <div class="fluid-modes-grid" id="fluidModesGrid">
-            
             <div class="fluid-mode-card active" data-fluid="smoke">
               <span class="fluid-mode-title">Fluid Dynamics</span>
-              <span class="fluid-mode-sub">Navier-Stokes crimson smoke with organic billows & mouse physics.</span>
+              <span class="fluid-mode-sub">Interactive Navier-Stokes simulation (mouse reactive)</span>
             </div>
-
             <div class="fluid-mode-card" data-fluid="waves">
               <span class="fluid-mode-title">Harmonic Waves</span>
-              <span class="fluid-mode-sub">Sinusoidal undulating laminar currents that ripple with cursor drift.</span>
+              <span class="fluid-mode-sub">Undulating laminar currents</span>
             </div>
-
             <div class="fluid-mode-card" data-fluid="embers">
               <span class="fluid-mode-title">Cosmic Embers</span>
-              <span class="fluid-mode-sub">Celestial dust & drifting embers swirling in deep negative space.</span>
+              <span class="fluid-mode-sub">Drifting luminous particles</span>
             </div>
-
-            <div class="fluid-mode-card" data-fluid="none">
-              <span class="fluid-mode-title">Static Void (Off)</span>
-              <span class="fluid-mode-sub">Pure pitch black canvas. Zero GPU/CPU overhead. Maximum battery saver.</span>
-            </div>
-
             <div class="fluid-mode-card" data-fluid="thermal">
               <span class="fluid-mode-title">Thermal Heat Map</span>
-              <span class="fluid-mode-sub">Very slow shifting gradient noise field.</span>
+              <span class="fluid-mode-sub">Slow shifting gradient field</span>
             </div>
-
-            <div class="fluid-mode-card" data-fluid="cotton">
-              <span class="fluid-mode-title">Cotton Drift</span>
-              <span class="fluid-mode-sub">Soft puffy particles floating slowly upward.</span>
-            </div>
-
-            <div class="fluid-mode-card" data-fluid="ripples">
-              <span class="fluid-mode-title">Slow Ripples</span>
-              <span class="fluid-mode-sub">Slow expanding concentric rings.</span>
-            </div>
-
             <div class="fluid-mode-card" data-fluid="trees">
               <span class="fluid-mode-title">Minimalist Trees</span>
-              <span class="fluid-mode-sub">Silhouettes swaying gently in the wind.</span>
+              <span class="fluid-mode-sub">Silhouettes swaying in wind</span>
             </div>
-
-            <div class="fluid-mode-card" data-fluid="horizon">
-              <span class="fluid-mode-title">Horizon</span>
-              <span class="fluid-mode-sub">Slow moving color band across the screen.</span>
+            <div class="fluid-mode-card" data-fluid="none">
+              <span class="fluid-mode-title">Clean Void</span>
+              <span class="fluid-mode-sub">Pure dark background</span>
             </div>
-
-            <div class="fluid-mode-card" data-fluid="sand">
-              <span class="fluid-mode-title">Sand Dune</span>
-              <span class="fluid-mode-sub">Slow flowing sand dune lines.</span>
-            </div>
-
-            <div class="fluid-mode-card" data-fluid="ribbon">
-              <span class="fluid-mode-title">Metallic Ribbon</span>
-              <span class="fluid-mode-sub">Slow flowing metallic band.</span>
-            </div>
-
-            <div class="fluid-mode-card" data-fluid="sonar">
-              <span class="fluid-mode-title">Sonar</span>
-              <span class="fluid-mode-sub">Slow expanding rings from center.</span>
-            </div>
-
-            <div class="fluid-mode-card" data-fluid="prisms">
-              <span class="fluid-mode-title">Prisms</span>
-              <span class="fluid-mode-sub">Slow rotating translucent geometric shapes.</span>
-            </div>
-
-            <div class="fluid-mode-card" data-fluid="clouds">
-              <span class="fluid-mode-title">Minimalist Clouds</span>
-              <span class="fluid-mode-sub">Slow drifting clouds.</span>
-            </div>
-
-            <div class="fluid-mode-card" data-fluid="silk">
-              <span class="fluid-mode-title">Silk</span>
-              <span class="fluid-mode-sub">Slow flowing fabric-like ribbons.</span>
-            </div>
-
-            <div class="fluid-mode-card" data-fluid="sunset">
-              <span class="fluid-mode-title">Sunset</span>
-              <span class="fluid-mode-sub">Slow color gradient sky.</span>
-            </div>
-
-            <div class="fluid-mode-card" data-fluid="mountains">
-              <span class="fluid-mode-title">Mountains</span>
-              <span class="fluid-mode-sub">Slowly zooming past layered silhouettes.</span>
-            </div>
-
-            <div class="fluid-mode-card" data-fluid="lava">
-              <span class="fluid-mode-title">Lava Lamp</span>
-              <span class="fluid-mode-sub">Slow floating blobs.</span>
-            </div>
-
           </div>
         </div>
 
-        <!-- Clock Settings -->
         <div class="settings-group">
           <label class="settings-label">Clock</label>
           <div class="input-field">
             <label for="cfgClockFont">Font</label>
             <select id="cfgClockFont">
-              <option value="system">System (San Francisco)</option>
+              <option value="system">System</option>
               <option value="monospace">Monospace</option>
-              <option value="serif">Serif (New York)</option>
+              <option value="serif">Serif</option>
               <option value="rounded">Rounded</option>
             </select>
           </div>
@@ -510,7 +453,7 @@
           <div class="input-field">
             <label for="cfgClockFormat">Format</label>
             <select id="cfgClockFormat">
-              <option value="12">12-hour (AM/PM)</option>
+              <option value="12">12-hour</option>
               <option value="24">24-hour</option>
             </select>
           </div>
@@ -527,7 +470,6 @@
           </div>
         </div>
 
-        <!-- Quote Style -->
         <div class="settings-group">
           <label class="settings-label">Quote Style</label>
           <div class="input-field">
@@ -556,7 +498,6 @@
           </div>
         </div>
 
-        <!-- Audio Settings -->
         <div class="settings-group">
           <label class="settings-label">Soundscapes & Alerts</label>
           <div class="toggle-row">
@@ -567,99 +508,124 @@
             </label>
           </div>
         </div>
-
       </div>
 
-      <!-- Tab 4: Profile & Philosophical Names -->
+      <!-- Tab 4: Profile -->
       <div class="tab-pane" id="tab-profile">
-        
-        <!-- User Name -->
         <div class="settings-group">
-          <label class="settings-label" for="cfgUserName">Your Name (for personalized greeting)</label>
-          <input type="text" id="cfgUserName" placeholder="e.g. Alex, Maya, or leave blank" maxlength="24" class="text-input">
+          <label class="settings-label" for="cfgUserName">Your Name</label>
+          <input type="text" id="cfgUserName" placeholder="e.g. Alex, Maya" maxlength="24" class="text-input">
           <p class="settings-hint">Preview: <strong id="namePreview">Good afternoon.</strong></p>
         </div>
 
-        <!-- App Name Selection (Sanskrit, Greek, Roman) -->
         <div class="settings-group">
-          <label class="settings-label">Application Title & Philosophical Heritage</label>
+          <label class="settings-label">Application Title</label>
           <div class="name-cards-grid" id="nameCardsGrid">
-            
             <div class="name-card active" data-name="POMODORO">
               <div class="name-card-header">
                 <span class="name-title">POMODORO</span>
                 <span class="name-origin">Italian</span>
               </div>
-              <p class="name-meaning">The classic standard. Named after the tomato kitchen timer by Francesco Cirillo.</p>
+              <p class="name-meaning">The classic tomato kitchen timer.</p>
             </div>
-
             <div class="name-card" data-name="KAIROS">
               <div class="name-card-header">
                 <span class="name-title">KAIROS</span>
-                <span class="name-origin">Greek · καιρός</span>
+                <span class="name-origin">Greek</span>
               </div>
-              <p class="name-meaning">The supreme, qualitative moment in time. Not mere seconds, but the opportune moment for decisive action.</p>
+              <p class="name-meaning">The opportune moment for decisive action.</p>
             </div>
-
             <div class="name-card" data-name="DHYĀNA">
               <div class="name-card-header">
                 <span class="name-title">DHYĀNA</span>
-                <span class="name-origin">Sanskrit · ध्यान</span>
+                <span class="name-origin">Sanskrit</span>
               </div>
-              <p class="name-meaning">Total meditative absorption. The state of unbroken, continuous awareness centered purely on the task at hand.</p>
+              <p class="name-meaning">Total meditative absorption.</p>
             </div>
-
             <div class="name-card" data-name="EKĀGRA">
               <div class="name-card-header">
                 <span class="name-title">EKĀGRA</span>
-                <span class="name-origin">Sanskrit · एकाग्र</span>
+                <span class="name-origin">Sanskrit</span>
               </div>
-              <p class="name-meaning">Single-pointed concentration. Complete stillness of mind where all distractions vanish into the focal point.</p>
+              <p class="name-meaning">Single-pointed concentration.</p>
             </div>
-
             <div class="name-card" data-name="ATARAXIA">
               <div class="name-card-header">
                 <span class="name-title">ATARAXIA</span>
-                <span class="name-origin">Greek · ἀταραξία</span>
+                <span class="name-origin">Greek</span>
               </div>
-              <p class="name-meaning">Untroubled tranquility and unwavering peace of mind in the midst of challenging work.</p>
+              <p class="name-meaning">Untroubled tranquility.</p>
             </div>
-
             <div class="name-card" data-name="TEMPUS">
               <div class="name-card-header">
                 <span class="name-title">TEMPUS</span>
-                <span class="name-origin">Roman / Latin</span>
+                <span class="name-origin">Latin</span>
               </div>
-              <p class="name-meaning">The sacred, disciplined rhythm of hours, seasons, and deliberate momentum.</p>
+              <p class="name-meaning">The disciplined rhythm of hours.</p>
             </div>
-
             <div class="name-card" data-name="AION">
               <div class="name-card-header">
                 <span class="name-title">AION</span>
-                <span class="name-origin">Greek · Αἰών</span>
+                <span class="name-origin">Greek</span>
               </div>
-              <p class="name-meaning">Timeless eternity. The boundless present where deep flow makes hours feel like suspended moments.</p>
+              <p class="name-meaning">Timeless eternity.</p>
             </div>
-
             <div class="name-card" data-name="SAMĀDHI">
               <div class="name-card-header">
                 <span class="name-title">SAMĀDHI</span>
-                <span class="name-origin">Sanskrit · समाधि</span>
+                <span class="name-origin">Sanskrit</span>
               </div>
-              <p class="name-meaning">The ultimate pinnacle of cognitive unification, where the observer and the work become one.</p>
+              <p class="name-meaning">Cognitive unification.</p>
             </div>
+          </div>
+        </div>
+      </div>
 
+      <!-- Tab 5: Tasks -->
+      <div class="tab-pane" id="tab-tasks">
+        <div class="settings-group">
+          <label class="settings-label">Task Panel</label>
+          <div class="task-setting-item">
+            <span>Show tasks panel on the right</span>
+            <label class="switch">
+              <input type="checkbox" id="cfgTasksEnabled" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <p class="settings-hint">Manage tasks from the slide-out panel. Tasks persist across sessions.</p>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label">Quick Add</label>
+          <div class="input-field">
+            <input type="text" id="cfgQuickTask" placeholder="Enter a task...">
+            <button id="addQuickTaskBtn" style="margin-top:8px;padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;">Add Task</button>
           </div>
         </div>
 
+        <div class="settings-group">
+          <label class="settings-label">Calendar (ICS) Sync</label>
+          <div class="input-field">
+            <label for="cfgIcsUrl">ICS feed URL</label>
+            <input type="url" id="cfgIcsUrl" placeholder="https://calendar.google.com/.../basic.ics">
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button id="syncIcsBtn" style="padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;">Sync now</button>
+            <button id="clearIcsBtn" style="padding:8px 16px;background:var(--graphite);color:var(--silver);border:none;border-radius:8px;cursor:pointer;">Clear</button>
+          </div>
+          <p class="settings-hint" id="icsStatus">No calendar connected.</p>
+
+          <div class="input-field" style="margin-top:12px;">
+            <label for="cfgIcsPaste">Or paste ICS content (works on GitHub Pages / offline)</label>
+            <textarea id="cfgIcsPaste" rows="4" placeholder="BEGIN:VCALENDAR..."></textarea>
+          </div>
+          <button id="importIcsBtn" style="margin-top:8px;padding:8px 16px;background:var(--graphite);color:var(--silver);border:none;border-radius:8px;cursor:pointer;">Import pasted</button>
+        </div>
       </div>
 
-      <!-- Modal Footer -->
       <div class="modal-footer">
         <button class="btn btn-secondary" id="resetDefaultsBtn">Reset to Defaults</button>
         <button class="btn btn-primary" id="saveSettingsBtn">Save & Apply</button>
       </div>
-
     </div>
   </div>
 
