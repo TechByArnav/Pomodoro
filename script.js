@@ -792,7 +792,9 @@ class FocusController {
 
     const style = this.state.data.timerStyle || 'ring';
 
-    if (this.$.timerRingWrap) this.$.timerRingWrap.style.display = style === 'ring' ? 'block' : 'none';
+    if (this.$.timerRingWrap) this.$.timerRingWrap.style.display = (style === 'ring' || style === 'none') ? 'block' : 'none';
+    const ringSvg = this.$.timerRingWrap ? this.$.timerRingWrap.querySelector('.timer-svg') : null;
+    if (ringSvg) ringSvg.style.display = style === 'ring' ? 'block' : 'none';
     if (this.$.timerProgressWrap) this.$.timerProgressWrap.style.display = style === 'progress' ? 'block' : 'none';
     if (this.$.timerGaugeWrap) this.$.timerGaugeWrap.style.display = style === 'gauge' ? 'block' : 'none';
     if (this.$.timerDotsWrap) this.$.timerDotsWrap.style.display = style === 'dots' ? 'block' : 'none';

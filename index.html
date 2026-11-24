@@ -89,41 +89,41 @@
               <span class="flowtime-earned-text" id="flowtimeEarnedText">Earned Rest: 0m</span>
               <span class="flowtime-ratio-hint">5:1 Flowtime Ratio</span>
             </div>
+          </div>
+        </div>
 
-            <!-- Timer Style Variants -->
-            <div class="timer-variant timer-progress-wrap" id="timerProgressWrap" style="display:none;">
-              <div class="timer-progress-bar-label">Focus Progress</div>
-              <div class="timer-progress-bar">
-                <div class="timer-progress-bar-fill" id="timerProgressFill"></div>
-              </div>
+        <!-- Timer Style Variants (siblings so they show when ring is hidden) -->
+        <div class="timer-variant timer-progress-wrap" id="timerProgressWrap" style="display:none;">
+          <div class="timer-progress-bar-label">Focus Progress</div>
+          <div class="timer-progress-bar">
+            <div class="timer-progress-bar-fill" id="timerProgressFill"></div>
+          </div>
+        </div>
+
+        <div class="timer-variant timer-gauge-wrap" id="timerGaugeWrap" style="display:none;">
+          <div class="timer-gauge">
+            <svg viewBox="0 0 200 200">
+              <circle class="gauge-track" cx="100" cy="100" r="80" />
+              <circle class="gauge-progress" id="timerGaugeProgress" cx="100" cy="100" r="80" />
+            </svg>
+            <div class="timer-gauge-center" id="timerGaugeCenter">
+              <span class="timer-time" id="timerGaugeTime">25:00</span>
             </div>
+          </div>
+        </div>
 
-            <div class="timer-variant timer-gauge-wrap" id="timerGaugeWrap" style="display:none;">
-              <div class="timer-gauge">
-                <svg viewBox="0 0 200 200">
-                  <circle class="gauge-track" cx="100" cy="100" r="80" />
-                  <circle class="gauge-progress" id="timerGaugeProgress" cx="100" cy="100" r="80" />
-                </svg>
-                <div class="timer-gauge-center" id="timerGaugeCenter">
-                  <span class="timer-time" id="timerGaugeTime">25:00</span>
-                </div>
-              </div>
-            </div>
+        <div class="timer-variant timer-dots-wrap" id="timerDotsWrap" style="display:none;">
+          <div class="timer-dot-matrix" id="timerDotMatrix"></div>
+        </div>
 
-            <div class="timer-variant timer-dots-wrap" id="timerDotsWrap" style="display:none;">
-              <div class="timer-dot-matrix" id="timerDotMatrix"></div>
-            </div>
-
-            <div class="timer-variant timer-pie-wrap" id="timerPieWrap" style="display:none;">
-              <div class="timer-pie">
-                <svg viewBox="0 0 180 180">
-                  <circle class="pie-track" cx="90" cy="90" r="75" />
-                  <circle class="pie-progress" id="timerPieProgress" cx="90" cy="90" r="75" />
-                </svg>
-                <div class="timer-pie-center" id="timerPieCenter">
-                  <span class="timer-time" id="timerPieTime">25:00</span>
-                </div>
-              </div>
+        <div class="timer-variant timer-pie-wrap" id="timerPieWrap" style="display:none;">
+          <div class="timer-pie">
+            <svg viewBox="0 0 180 180">
+              <circle class="pie-track" cx="90" cy="90" r="75" />
+              <circle class="pie-progress" id="timerPieProgress" cx="90" cy="90" r="75" />
+            </svg>
+            <div class="timer-pie-center" id="timerPieCenter">
+              <span class="timer-time" id="timerPieTime">25:00</span>
             </div>
           </div>
         </div>
