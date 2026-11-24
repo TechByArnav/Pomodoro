@@ -256,6 +256,16 @@ class FocusController {
       stageBadge:          document.getElementById('stageBadge'),
       stageHint:           document.getElementById('stageHint'),
       timerRingWrap:       document.querySelector('.timer-ring-wrap'),
+      timerProgressWrap:    document.getElementById('timerProgressWrap'),
+      timerProgressFill:    document.getElementById('timerProgressFill'),
+      timerGaugeWrap:      document.getElementById('timerGaugeWrap'),
+      timerGaugeTime:      document.getElementById('timerGaugeTime'),
+      timerGaugeProgress:   document.getElementById('timerGaugeProgress'),
+      timerDotsWrap:       document.getElementById('timerDotsWrap'),
+      timerDotMatrix:      document.getElementById('timerDotMatrix'),
+      timerPieWrap:        document.getElementById('timerPieWrap'),
+      timerPieTime:        document.getElementById('timerPieTime'),
+      timerPieProgress:    document.getElementById('timerPieProgress'),
       ringProgress:        document.getElementById('ringProgress'),
       timerTime:           document.getElementById('timerTime'),
       timerLabel:          document.getElementById('timerLabel'),
@@ -357,7 +367,7 @@ class FocusController {
       // Profile
       cfgUserName:         document.getElementById('cfgUserName'),
       namePreview:         document.getElementById('namePreview'),
-      nameCards:           document.querySelectorAll('.name-card'),
+      cfgAppName:          document.getElementById('cfgAppName'),
     };
 
     this.$.ringProgress.style.strokeDasharray = this.RING_C;
@@ -476,13 +486,10 @@ class FocusController {
   }
 
   applyAppName(name) {
-    if (!name) name = 'POMODORO';
+    if (!name) name = 'DragonFocus';
     this.state.data.appName = name;
     this.$.logoMark.textContent = name;
-
-    this.$.nameCards.forEach(card => {
-      card.classList.toggle('active', card.dataset.name === name);
-    });
+    if (this.$.cfgAppName) this.$.cfgAppName.value = name;
   }
 
   applyFluidMode(mode) {
@@ -1439,14 +1446,13 @@ class FocusController {
       });
     });
 
-    // App Name Cards
-    this.$.nameCards.forEach(card => {
-      card.addEventListener('click', () => {
-        const name = card.dataset.name;
-        this.applyAppName(name);
+    // App Name input live preview
+    if (this.$.cfgAppName) {
+      this.$.cfgAppName.addEventListener('input', () => {
+        this.applyAppName(this.$.cfgAppName.value);
         this.state.save();
       });
-    });
+    }
 
     // Name input live preview
     this.$.cfgUserName.addEventListener('input', () => {
@@ -1489,7 +1495,7 @@ class FocusController {
     this.$.cfgSuperResetBreak.value = tSuper.resetBreak;
 
     this.$.cfgUserName.value = data.userName || '';
-    this.applyAppName(data.appName || 'POMODORO');
+    this.applyAppName(data.appName || 'DragonFocus');
 
     this.$.cfgChimeToggle.checked = !!data.chimeEnabled;
 
@@ -1530,6 +1536,10 @@ class FocusController {
     }
 
     this.state.data.userName = this.$.cfgUserName?.value.trim() || '';
+
+    if (this.$.cfgAppName) {
+      this.applyAppName(this.$.cfgAppName.value.trim());
+    }
 
     this.state.data.timings.classic = {
       work: Math.max(1, parseInt(this.$.cfgWorkDuration?.value) || 25),

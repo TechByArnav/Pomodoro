@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="description" content="Minimalist Focus Sanctuary — Customizable Pomodoro, Super-Pomodoro, 52/17, Ultradian & Animedoro Timer.">
   <meta name="theme-color" content="#000000">
-  <title>Pomodoro — Focus</title>
+  <title>DragonFocus — Focus</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍅</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -555,65 +555,9 @@
         </div>
 
         <div class="settings-group">
-          <label class="settings-label">Application Title</label>
-          <div class="name-cards-grid" id="nameCardsGrid">
-            <div class="name-card active" data-name="POMODORO">
-              <div class="name-card-header">
-                <span class="name-title">POMODORO</span>
-                <span class="name-origin">Italian</span>
-              </div>
-              <p class="name-meaning">The classic tomato kitchen timer.</p>
-            </div>
-            <div class="name-card" data-name="KAIROS">
-              <div class="name-card-header">
-                <span class="name-title">KAIROS</span>
-                <span class="name-origin">Greek</span>
-              </div>
-              <p class="name-meaning">The opportune moment for decisive action.</p>
-            </div>
-            <div class="name-card" data-name="DHYĀNA">
-              <div class="name-card-header">
-                <span class="name-title">DHYĀNA</span>
-                <span class="name-origin">Sanskrit</span>
-              </div>
-              <p class="name-meaning">Total meditative absorption.</p>
-            </div>
-            <div class="name-card" data-name="EKĀGRA">
-              <div class="name-card-header">
-                <span class="name-title">EKĀGRA</span>
-                <span class="name-origin">Sanskrit</span>
-              </div>
-              <p class="name-meaning">Single-pointed concentration.</p>
-            </div>
-            <div class="name-card" data-name="ATARAXIA">
-              <div class="name-card-header">
-                <span class="name-title">ATARAXIA</span>
-                <span class="name-origin">Greek</span>
-              </div>
-              <p class="name-meaning">Untroubled tranquility.</p>
-            </div>
-            <div class="name-card" data-name="TEMPUS">
-              <div class="name-card-header">
-                <span class="name-title">TEMPUS</span>
-                <span class="name-origin">Latin</span>
-              </div>
-              <p class="name-meaning">The disciplined rhythm of hours.</p>
-            </div>
-            <div class="name-card" data-name="AION">
-              <div class="name-card-header">
-                <span class="name-title">AION</span>
-                <span class="name-origin">Greek</span>
-              </div>
-              <p class="name-meaning">Timeless eternity.</p>
-            </div>
-            <div class="name-card" data-name="SAMĀDHI">
-              <div class="name-card-header">
-                <span class="name-title">SAMĀDHI</span>
-                <span class="name-origin">Sanskrit</span>
-              </div>
-              <p class="name-meaning">Cognitive unification.</p>
-            </div>
-          </div>
+          <label class="settings-label" for="cfgAppName">Application Title</label>
+          <input type="text" id="cfgAppName" class="text-input" placeholder="e.g. DragonFocus" maxlength="24">
+          <p class="settings-hint">Shown in the top-left corner and browser tab. Leave empty for DragonFocus.</p>
         </div>
       </div>
 
