@@ -36,6 +36,9 @@ const DEFAULTS = {
   icsUrl: '',
   icsEvents: [],
 
+  // Background video
+  ytUrl: '',
+
   // Method-specific timing (in minutes)
   timings: {
     classic: {
@@ -218,6 +221,7 @@ class FocusController {
     this.applyAccentColor(this.state.data.accentColor, false);
     this.applyAppName(this.state.data.appName);
     this.applyTheme(this.state.data.theme || 'dark', false);
+    this.applyYtBackground(this.state.data.ytUrl || '', false);
     this.setupEventListeners();
     this.setupSettingsUI();
 
@@ -282,6 +286,11 @@ class FocusController {
       tasksList:           document.getElementById('tasksList'),
       tasksEmpty:          document.getElementById('tasksEmpty'),
       tasksCount:          document.getElementById('tasksCount'),
+      workTypeSelect:      document.getElementById('workTypeSelect'),
+      recommendationCard:  document.getElementById('recommendationCard'),
+      recMethod:           document.getElementById('recMethod'),
+      recReason:           document.getElementById('recReason'),
+      applyRecBtn:         document.getElementById('applyRecBtn'),
       cfgIcsUrl:           document.getElementById('cfgIcsUrl'),
       syncIcsBtn:          document.getElementById('syncIcsBtn'),
       clearIcsBtn:         document.getElementById('clearIcsBtn'),
@@ -337,6 +346,9 @@ class FocusController {
       cfgQuoteSize:        document.getElementById('cfgQuoteSize'),
       cfgQuoteCorner:      document.getElementById('cfgQuoteCorner'),
       cfgTheme:            document.getElementById('cfgTheme'),
+      cfgYtUrl:            document.getElementById('cfgYtUrl'),
+      applyYtBtn:          document.getElementById('applyYtBtn'),
+      clearYtBtn:          document.getElementById('clearYtBtn'),
       cfgTimerStyle:       document.getElementById('cfgTimerStyle'),
       cfgTasksEnabled:     document.getElementById('cfgTasksEnabled'),
       quickTaskInput:      document.getElementById('cfgQuickTask'),
@@ -484,6 +496,36 @@ class FocusController {
     });
   }
 
+  extractYouTubeId(url) {
+    url = (url || '').trim();
+    if (!url) return null;
+    let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/);
+    if (m) return m[1];
+    if (/^[A-Za-z0-9_-]{11}$/.test(url)) return url;
+    return null;
+  }
+
+  applyYtBackground(url, updateStorage = true) {
+    if (updateStorage) { this.state.data.ytUrl = url || ''; this.state.save(); }
+    const container = document.getElementById('ytBgContainer');
+    const canvas = document.getElementById('fluidCanvas');
+    if (!container) return;
+    const id = this.extractYouTubeId(url);
+    if (url && url.trim() && id) {
+      container.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      container.style.display = 'block';
+      if (canvas) canvas.style.display = 'none';
+    } else {
+      container.style.display = 'none';
+      container.innerHTML = '';
+      if (canvas) canvas.style.display = 'block';
+      if (url && url.trim() && !id && this.$.icsStatus) {
+        // reuse status? no. just ignore
+      }
+    }
+    if (this.$.cfgYtUrl) this.$.cfgYtUrl.value = this.state.data.ytUrl || '';
+  }
+
   applyTheme(theme, updateStorage = true) {
     if (!theme) theme = 'dark';
     if (theme === 'system') {
@@ -507,6 +549,7 @@ class FocusController {
       this.$.activeTaskPill.style.display = 'none';
     }
     this.renderTasks();
+    this.updateRecommendation();
   }
   clearActiveTask() { this.setActiveTask(null); }
 
@@ -952,6 +995,7 @@ class FocusController {
     this.state.data.tasks.push(task);
     this.state.save();
     this.renderTasks();
+    this.updateRecommendation();
     return task;
   }
 
@@ -1029,9 +1073,13 @@ class FocusController {
   }
 
   async syncIcs() {
+    if (this.$.cfgIcsUrl && this.$.cfgIcsUrl.value.trim()) {
+      this.state.data.icsUrl = this.$.cfgIcsUrl.value.trim();
+      this.state.save();
+    }
     const url = (this.state.data.icsUrl || '').trim();
-    if (!url) { this.icsStatus && (this.icsStatus.textContent = 'Enter an ICS URL first.'); return; }
-    if (this.icsStatus) this.icsStatus.textContent = 'Syncing...';
+    if (!url) { if (this.$.icsStatus) this.$.icsStatus.textContent = 'Enter an ICS URL first.'; return; }
+    if (this.$.icsStatus) this.$.icsStatus.textContent = 'Syncing...';
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1040,10 +1088,10 @@ class FocusController {
       this.state.data.icsEvents = events;
       this.state.save();
       this.renderEvents();
-      if (this.icsStatus) this.icsStatus.textContent = `Synced ${events.length} events.`;
+      if (this.$.icsStatus) this.$.icsStatus.textContent = `Synced ${events.length} events.`;
     } catch (e) {
       console.error('ICS sync failed', e);
-      if (this.icsStatus) this.icsStatus.textContent = 'Sync failed: ' + (e.message || e);
+      if (this.$.icsStatus) this.$.icsStatus.textContent = 'Sync failed: ' + (e.message || e);
     }
   }
 
@@ -1119,6 +1167,53 @@ class FocusController {
     this.$.icsStatus.textContent = n ? `${n} events synced.` : (this.state.data.icsUrl ? 'Connected. Click Sync to load.' : 'No calendar connected.');
   }
 
+  // ── Study type recommendation ──
+  classifyWorkType(text) {
+    const t = (text || '').toLowerCase();
+    // Manual override
+    const manual = this.$.workTypeSelect ? this.$.workTypeSelect.value : 'auto';
+    let type = manual;
+    if (type === 'auto') {
+      if (/chapter|ch\.?\s*\d|pages?|p\.\s*\d|read|novel|book|article|essay\s*read/i.test(t)) type = 'reading';
+      else if (/math|algebra|calculus|equation|problem|worksheet|exercise|solve/i.test(t)) type = 'math';
+      else if (/essay|write|draft|paper|report|blog/i.test(t)) type = 'writing';
+      else if (/code|program|debug|function|api|git|bug|script/i.test(t)) type = 'coding';
+      else if (/memoriz|flashcard|vocab|terms|definitions/i.test(t)) type = 'memorization';
+      else if (/draw|design|art|music|creative|compose/i.test(t)) type = 'creative';
+      else type = 'general';
+    }
+
+    const map = {
+      reading:       { method: 'ultradian', reason: 'Long-form reading needs sustained 90-min focus with biological recovery.' },
+      math:          { method: 'classic',   reason: 'Problem-solving benefits from frequent short breaks to avoid fatigue.' },
+      writing:       { method: '52_17',     reason: 'Writing flows best in 52-min sprints with full disconnection.' },
+      coding:        { method: 'ultradian', reason: 'Coding requires deep immersion; 90/20 matches flow state.' },
+      memorization:  { method: 'classic',   reason: 'Short 25-min bursts aid retention and spacing.' },
+      creative:      { method: 'animedoro', reason: 'Creative work thrives with a 50-min focus + rewarding break.' },
+      general:       { method: 'classic',   reason: 'A balanced default for mixed tasks.' },
+    };
+    const info = map[type] || map.general;
+    const names = { classic:'Classic Pomodoro', super:'Super-Pomodoro', '52_17':'52/17 Method', ultradian:'Ultradian Rhythm', animedoro:'Animedoro', desktime:'DeskTime 112/26' };
+    return { type, method: info.method, reason: info.reason, methodName: names[info.method] };
+  }
+
+  updateRecommendation() {
+    if (!this.$.recommendationCard) return;
+    const text = this.$.taskInput ? this.$.taskInput.value : '';
+    const activeTask = this.activeTaskId ? (this.state.data.tasks || []).find(t => t.id === this.activeTaskId) : null;
+    const sourceText = activeTask ? activeTask.text : text;
+    if (!sourceText.trim() && (!this.$.workTypeSelect || this.$.workTypeSelect.value === 'auto')) {
+      this.$.recommendationCard.style.display = 'none';
+      return;
+    }
+    const rec = this.classifyWorkType(sourceText);
+    this.$.recommendationCard.style.display = 'flex';
+    if (this.$.recMethod) this.$.recMethod.textContent = rec.methodName;
+    if (this.$.recReason) this.$.recReason.textContent = rec.reason;
+    if (this._recMethod) this._recMethod = rec.method;
+    this._recMethod = rec.method;
+  }
+
   escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
@@ -1162,12 +1257,74 @@ class FocusController {
       if (e.target === this.$.tasksPanel) this.$.tasksPanel.classList.remove('open');
     });
 
+    // Quick add task from settings
+    if (this.$.addQuickTaskBtn) {
+      this.$.addQuickTaskBtn.addEventListener('click', () => {
+        const text = this.$.quickTaskInput ? this.$.quickTaskInput.value : '';
+        if (text.trim()) {
+          this.addTask(text);
+          if (this.$.quickTaskInput) this.$.quickTaskInput.value = '';
+          this.renderTasks();
+        }
+      });
+    }
+    if (this.$.quickTaskInput) {
+      this.$.quickTaskInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          const text = this.$.quickTaskInput.value;
+          if (text.trim()) {
+            this.addTask(text);
+            this.$.quickTaskInput.value = '';
+            this.renderTasks();
+          }
+        }
+      });
+    }
+
     // Super-Pomodoro Phase 2 "Finish Flow Block"
     this.$.flowFinishBtn.addEventListener('click', () => {
       this.completeSession();
     });
 
-    // ICS sync buttons
+    // Study type recommendation
+    if (this.$.workTypeSelect) {
+      this.$.workTypeSelect.addEventListener('change', () => this.updateRecommendation());
+    }
+    if (this.$.taskInput) {
+      this.$.taskInput.addEventListener('input', () => this.updateRecommendation());
+    }
+    if (this.$.applyRecBtn) {
+      this.$.applyRecBtn.addEventListener('click', () => {
+        const method = this._recMethod || 'classic';
+        this.state.data.method = method;
+        this.state.save();
+        // update method cards UI
+        this.$.methodCards.forEach(c => c.classList.toggle('active', c.dataset.method === method));
+        const info = METHOD_INFO[method] || METHOD_INFO.classic;
+        if (this.$.explainerTitle) this.$.explainerTitle.textContent = info.title;
+        if (this.$.explainerBody) this.$.explainerBody.textContent = info.body;
+        const isSuper = method === 'super';
+        if (this.$.classicTimerSettings) this.$.classicTimerSettings.style.display = isSuper ? 'none' : 'block';
+        if (this.$.superTimerSettings) this.$.superTimerSettings.style.display = isSuper ? 'block' : 'none';
+        this.resetTimer();
+      });
+    }
+
+    // YouTube background buttons
+    if (this.$.applyYtBtn) {
+      this.$.applyYtBtn.addEventListener('click', () => {
+        const url = this.$.cfgYtUrl ? this.$.cfgYtUrl.value.trim() : '';
+        this.applyYtBackground(url);
+      });
+    }
+    if (this.$.clearYtBtn) {
+      this.$.clearYtBtn.addEventListener('click', () => {
+        if (this.$.cfgYtUrl) this.$.cfgYtUrl.value = '';
+        this.applyYtBackground('');
+      });
+    }
+
+    // ICS sync buttons:
     if (this.$.syncIcsBtn) {
       this.$.syncIcsBtn.addEventListener('click', () => this.syncIcs());
     }
@@ -1355,6 +1512,7 @@ class FocusController {
     if (this.$.cfgTheme) this.$.cfgTheme.value = data.theme || 'dark';
 
     if (this.$.cfgIcsUrl) this.$.cfgIcsUrl.value = data.icsUrl || '';
+    if (this.$.cfgYtUrl) this.$.cfgYtUrl.value = data.ytUrl || '';
     this.updateIcsStatus();
 
     // Timer style
@@ -1407,6 +1565,7 @@ class FocusController {
     this.state.data.tasksEnabled = this.$.cfgTasksEnabled?.checked;
 
     if (this.$.cfgIcsUrl) this.state.data.icsUrl = this.$.cfgIcsUrl.value.trim();
+    if (this.$.cfgYtUrl) this.state.data.ytUrl = this.$.cfgYtUrl.value.trim();
 
     if (this.$.cfgTheme) this.applyTheme(this.$.cfgTheme.value);
 

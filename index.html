@@ -15,6 +15,10 @@
 <body>
 
   <!-- WebGL fluid / gas dynamics / wave / ember background -->
+  <!-- YouTube background (optional) -->
+  <div id="ytBgContainer" class="yt-bg" style="display:none;"></div>
+
+  <!-- WebGL fluid / gas dynamics / wave / ember background -->
   <canvas id="fluidCanvas"></canvas>
 
   <!-- Content overlay -->
@@ -183,6 +187,25 @@
         <div class="tasks-input-wrap">
           <input type="text" id="taskInput" placeholder="Add a task..." maxlength="100">
           <button id="addTaskBtn" title="Add task">+</button>
+        </div>
+        <div class="work-type-wrap">
+          <label for="workTypeSelect">Work type</label>
+          <select id="workTypeSelect">
+            <option value="auto">Auto-detect from task</option>
+            <option value="reading">Reading</option>
+            <option value="math">Math / Problem-solving</option>
+            <option value="writing">Writing</option>
+            <option value="coding">Coding</option>
+            <option value="memorization">Memorization</option>
+            <option value="creative">Creative</option>
+            <option value="general">General</option>
+          </select>
+        </div>
+        <div class="recommendation-card" id="recommendationCard" style="display:none;">
+          <span class="rec-label">Recommended timer</span>
+          <span class="rec-method" id="recMethod"></span>
+          <span class="rec-reason" id="recReason"></span>
+          <button id="applyRecBtn" class="rec-apply">Apply</button>
         </div>
         <div class="tasks-list" id="tasksList"></div>
         <div class="calendar-section" id="calendarSection" style="display:none;">
@@ -398,6 +421,19 @@
               <span class="custom-color-label">+ Custom</span>
             </div>
           </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Background video (YouTube)</label>
+          <div class="input-field">
+            <label for="cfgYtUrl">YouTube URL or video ID</label>
+            <input type="text" id="cfgYtUrl" placeholder="https://www.youtube.com/watch?v=..." />
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button id="applyYtBtn" style="padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;">Apply</button>
+            <button id="clearYtBtn" style="padding:8px 16px;background:var(--graphite);color:var(--silver);border:none;border-radius:8px;cursor:pointer;">Clear</button>
+          </div>
+          <p class="settings-hint">Plays muted, looped, and behind the app. Leave empty to use the canvas background.</p>
         </div>
 
         <div class="settings-group">

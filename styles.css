@@ -167,6 +167,25 @@ input, button, select, textarea {
 }
 
 
+/* ── YouTube Background ────────────────────────────────────── */
+.yt-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.yt-bg iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120vw;
+  height: 120vh;
+  transform: translate(-50%, -50%);
+  border: 0;
+  pointer-events: none;
+}
+
 /* ── Fluid Background Canvas ───────────────────────────────── */
 #fluidCanvas {
   position: fixed;
@@ -400,10 +419,9 @@ input, button, select, textarea {
 
 .greeting-sub {
   font-size: 12px;
-  color: var(--steel);
+  color: var(--text-muted);
   margin-top: 10px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0;
 }
 
 
@@ -435,12 +453,11 @@ input, button, select, textarea {
   display: inline-block;
   padding: 4px 14px;
   border-radius: 999px;
-  background: var(--crimson-glow);
-  border: 1px solid var(--crimson-soft);
+  background: var(--accent-soft);
+  border: 1px solid var(--border-subtle);
   font-size: 11px;
-  color: var(--crimson);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0;
 }
 .stage-hint {
   font-size: 11px;
@@ -507,9 +524,8 @@ input, button, select, textarea {
 
 .timer-label {
   font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ash);
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
   user-select: none;
 }
 
@@ -1060,10 +1076,10 @@ kbd {
 .settings-label {
   display: block;
   font-size: 12px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--ash);
-  margin-bottom: 12px;
+  letter-spacing: 0;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 .settings-hint {
   font-size: 12px;
@@ -1623,6 +1639,50 @@ input:checked + .slider::before { transform: translateX(20px); }
 .tasks-empty-ill { color: var(--text-muted); opacity: 0.6; }
 .tasks-empty-title { font-size: 14px; color: var(--text-secondary); font-weight: 500; margin: 0; }
 .tasks-empty-sub { font-size: 12px; color: var(--text-muted); margin: 0; }
+
+/* ── Work type + recommendation ── */
+.work-type-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.work-type-wrap select {
+  flex: 1;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  outline: none;
+}
+.recommendation-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--accent-soft);
+  font-size: 12px;
+}
+.rec-label { color: var(--text-muted); font-weight: 500; }
+.rec-method { color: var(--text-primary); font-weight: 600; }
+.rec-reason { color: var(--text-secondary); flex-basis: 100%; font-size: 11px; }
+.rec-apply {
+  margin-left: auto;
+  padding: 4px 10px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  border: none;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
 
 /* ── Screen reader only ── */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
